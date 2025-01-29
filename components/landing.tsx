@@ -4,7 +4,7 @@ export default function Landing(){
     return (
         <>
           <Nav />
-          <Hero />
+          <Hero /> 
         </>
     )
 }
@@ -12,7 +12,7 @@ export default function Landing(){
 function Hero(){
     return (
         <>
-          <div className="bg-[#2E073F] h-[95svh]">Yoo</div>
+          <div className="bg-gradient-to-b from-[#2E073F] to-[#7A1CAC] h-[95svh]">Yoo</div>
         </>
     )
 }
