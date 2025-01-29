@@ -18,7 +18,7 @@ export default function Nav(){
             </div>
             <Link href={"/login"}>Login</Link>
           </nav>
-          <nav className="lg:hidden md:hidden fixed w-full flex items-center text-white p-3 backdrop-blur-md justify-between">
+          <nav className="lg:hidden z-20 md:hidden fixed w-full flex items-center text-white p-3 backdrop-blur-md justify-between">
             <Link href={"/"} className="text-xl font-bold">AnonyLine..</Link>
             <Bar open={open} setOpen={setOpen} />
           </nav>
@@ -32,7 +32,7 @@ export const AnimateDiv = motion.div;
 function SideBar({}){
     return (
         <>
-          <AnimateDiv className="flex flex-col gap-3 pt-20 text-white px-5" initial={{
+          <AnimateDiv className="flex flex-col gap-3 pt-16 h-screen fixed backdrop-blur-md w-full text-white px-5" initial={{
                 x: "100vw"
             }} animate={{
                 x: "0vw"
