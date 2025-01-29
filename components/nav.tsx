@@ -1,4 +1,5 @@
 "use client";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 import { HiBars3BottomRight } from "react-icons/hi2";
@@ -21,12 +22,35 @@ export default function Nav(){
             <Link href={"/"} className="text-xl font-bold">AnonyLine..</Link>
             <Bar open={open} setOpen={setOpen} />
           </nav>
+          <AnimatePresence>
+                {open && <SideBar />}
+            </AnimatePresence>
         </>
     )
 }
+export const AnimateDiv = motion.div;
 function SideBar({}){
     return (
-        <></>
+        <>
+          <AnimateDiv className="flex flex-col gap-3 pt-20 text-white px-5" initial={{
+                x: "100vw"
+            }} animate={{
+                x: "0vw"
+          }}
+            transition={{
+                type: "spring",
+                stiffness: 100
+            }}
+            exit={{
+                x:"100vw"
+            }}
+          >
+            <Link href={"/about"}>About</Link>
+            <Link href={"/features"}>Features</Link>
+            <Link href={"/contact"}>Contact</Link>
+            <Link href={"/login"}>Login</Link>
+          </AnimateDiv>
+        </>
     )
 }
 function Bar({open, setOpen}:{open:boolean, setOpen:React.Dispatch<React.SetStateAction<boolean>>}){
