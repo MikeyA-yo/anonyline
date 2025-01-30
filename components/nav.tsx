@@ -18,7 +18,7 @@ export default function Nav(){
             </div>
             <Link href={"/login"}>Login</Link>
           </nav>
-          <nav className="lg:hidden z-20 md:hidden fixed w-full flex items-center text-white p-3 backdrop-blur-md justify-between">
+          <nav className="lg:hidden z-30 md:hidden fixed w-full flex items-center text-white p-3 backdrop-blur-md justify-between">
             <Link href={"/"} className="text-xl font-bold">AnonyLine..</Link>
             <Bar open={open} setOpen={setOpen} />
           </nav>
