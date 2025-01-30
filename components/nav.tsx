@@ -9,7 +9,7 @@ export default function Nav(){
     const [open, setOpen] = useState(false);
     return (
         <>
-          <nav className="backdrop-blur-md lg:flex md:flex hidden items-center shadow-sm shadow-[#7A1CAC] justify-evenly w-full fixed p-5 text-white">
+          <nav className="backdrop-blur-md lg:flex md:flex hidden items-center shadow-sm shadow-[#7A1CAC] justify-evenly w-full fixed p-5 z-20 text-white">
             <Link href={"/"} className="text-xl font-bold">AnonyLine..</Link>
             <div className="p-3 border-[0.5px] border-[#FFFBFF] bg-[#FBFFFF] bg-opacity-10 backdrop-blur-md rounded-full flex gap-3">
                 <Link href={"/about"}>About</Link>
@@ -32,7 +32,7 @@ export const AnimateDiv = motion.div;
 function SideBar({}){
     return (
         <>
-          <AnimateDiv className="flex flex-col gap-3 pt-16 h-screen fixed backdrop-blur-md w-full text-white px-5" initial={{
+          <AnimateDiv className="flex flex-col gap-3 pt-16 h-screen fixed backdrop-blur-md w-full text-white px-5 z-20" initial={{
                 x: "100vw"
             }} animate={{
                 x: "0vw"

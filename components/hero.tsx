@@ -2,11 +2,13 @@
 
 import { motion } from "motion/react";
 import { AnimateDiv } from "./nav";
+import ParticlesContainer from "./particles";
 
 export default function Hero() {
   return (
     <>
       <div className="bg-gradient-to-b  text-center px-4 flex flex-col items-center justify-center gap-5 from-[#2E073F] to-[#7A1CAC] h-[100svh]">
+        <ParticlesContainer />
         <AnimateDiv
           initial={{
             y: "-10vh",
@@ -20,6 +22,7 @@ export default function Hero() {
             type: "spring",
             stiffness: 100,
           }}
+          className="z-10"
         >
           <h2 className="lg:text-3xl text-2xl bg-gradient-to-r font-extrabold from-[#AD49E1] to-[#EBD3F8] text-transparent bg-clip-text">
             Enjoy seamless anonymous chat with Anonyline
@@ -34,12 +37,13 @@ export default function Hero() {
             y: 0,
             opacity: 1,
           }}
+          className="z-10"
         >
           <p className="font-mono text-[#EBD3F8] text-lg">
             Anonyline allows a 2 way communication anonymously
           </p>
         </AnimateDiv>
-        <div className="flex gap-2">
+        <div className="flex gap-2 z-10">
           <motion.button
             initial={{
               scale: 0.6,
@@ -55,7 +59,14 @@ export default function Hero() {
               duration: 0.4,
               delay: 0.2,
             }}
-            className="bg-[#AD49E1] text-[#EBD3F8] px-4 py-2 rounded-lg"
+            whileHover={{
+              scale:0.85,
+              transition:{
+                duration:0.2,
+                delay:0
+              }
+            }}
+            className="bg-[#AD49E1] text-[#EBD3F8] hover:scale-75 px-4 py-2 rounded-lg"
           >
             Get Started
           </motion.button>
@@ -73,6 +84,13 @@ export default function Hero() {
             transition={{
               duration: 0.4,
               delay: 0.4,
+            }}
+            whileHover={{
+              scale:0.85,
+              transition:{
+                duration:0.2,
+                delay:0
+              }
             }}
             className="bg-[#AD49E1] text-[#EBD3F8] px-4 py-2 rounded-lg"
           >
