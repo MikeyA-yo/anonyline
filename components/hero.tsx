@@ -2,13 +2,12 @@
 
 import { motion } from "motion/react";
 import { AnimateDiv } from "./nav";
-import ParticlesContainer from "./particles";
+
 
 export default function Hero() {
   return (
     <>
-      <div className="bg-gradient-to-b  text-center px-4 flex flex-col items-center justify-center gap-5 from-[#2E073F] to-[#7A1CAC] h-[100svh]">
-        <ParticlesContainer />
+      <div className="text-center px-4 flex flex-col items-center justify-center gap-5  h-[100svh]">
         <AnimateDiv
           initial={{
             y: "-10vh",

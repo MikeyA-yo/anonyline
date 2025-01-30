@@ -1,3 +1,4 @@
+"use client";
 import { loadBasic } from "@tsparticles/basic";
 import { initParticlesEngine, Particles } from "@tsparticles/react";
 import { useEffect, useState } from "react";
@@ -23,7 +24,7 @@ export default function ParticlesContainer() {
     }
   },[])
   return (
-    <div className="absolute inset-0 z-0">
+    <div className="absolute inset-0 -z-0">
       {init && <Particles
         id="tsparticles"
         options={{
