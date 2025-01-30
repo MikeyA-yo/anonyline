@@ -9,11 +9,18 @@ export default function ParticlesContainer() {
 //     await loadBasic(engine);
 //   };
  const [init, setInit] = useState(false);
+ const [color, setColor] = useState("#EBD3F8");
   useEffect(()=>{
     initParticlesEngine( async(engine)=>{
         await loadBasic(engine);
         setInit(true)
     })
+    const int = setInterval(()=>{
+        setColor("#"+Math.floor(Math.random()*16777215).toString(16));// #AD49E1 random color
+    }, 7*1000)
+    return ()=>{
+        clearInterval(int)
+    }
   },[])
   return (
     <div className="absolute inset-0 z-0">
@@ -25,7 +32,7 @@ export default function ParticlesContainer() {
           },
           particles: {
             number: { value: 50 },
-            color: { value: "#EBD3F8" },
+            color: { value: color },
             opacity: { value: 0.5 },
             size: { value: 3 },
             move: { enable: true, speed: 1 },
