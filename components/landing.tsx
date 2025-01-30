@@ -1,3 +1,4 @@
+import Hero from "./hero";
 import Nav from "./nav";
 
 export default function Landing() {
@@ -11,17 +12,4 @@ export default function Landing() {
   );
 }
 
-function Hero() {
-  return (
-    <>
-      <div className="bg-gradient-to-b  text-center px-4 flex flex-col items-center justify-center gap-5 from-[#2E073F] to-[#7A1CAC] h-[100svh]">
-        <div>
-            <h2 className="lg:text-3xl text-2xl bg-gradient-to-r font-extrabold from-[#AD49E1] to-[#EBD3F8] text-transparent bg-clip-text">Enjoy seamless anonymous chat with Anonyline</h2>
-        </div>
-        <div>
-            <p className="font-mono text-[#EBD3F8] text-lg">Anonyline allows a 2 way communication anonymously</p>
-        </div>
-      </div>
-    </>
-  );
-}
+
