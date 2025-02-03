@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { HiBars3BottomRight } from "react-icons/hi2";
 import { MdClose } from "react-icons/md";
+import { ScrollLink } from "./ay-scroll";
 
 export default function Nav(){
     const [open, setOpen] = useState(false);
@@ -12,7 +13,7 @@ export default function Nav(){
           <nav className="backdrop-blur-md lg:flex md:flex hidden items-center shadow-sm shadow-[#7A1CAC] justify-evenly w-full fixed p-5 z-20 text-white">
             <Link href={"/"} className="text-xl font-bold">AnonyLine..</Link>
             <div className="p-3 border-[0.5px] border-[#FFFBFF] bg-[#FBFFFF] bg-opacity-10 backdrop-blur-md rounded-full flex gap-3">
-                <Link href={"/about"}>About</Link>
+                <ScrollLink href={"#about"}>About</ScrollLink>
                 <Link href={"/features"}>Features</Link>
                 <Link href={"/contact"}>Contact</Link>
             </div>
@@ -45,7 +46,7 @@ function SideBar({}){
                 x:"100vw"
             }}
           >
-            <Link href={"/about"}>About</Link>
+            <Link href={"#about"} scroll>About</Link>
             <Link href={"/features"}>Features</Link>
             <Link href={"/contact"}>Contact</Link>
             <Link href={"/login"}>Login</Link>
