@@ -1,4 +1,5 @@
 import About from "./about";
+import Features from "./features";
 import Hero from "./hero";
 import Nav from "./nav";
 import ParticlesContainer from "./particles";
@@ -11,6 +12,7 @@ export default function Landing() {
           <Nav />
           <Hero />
           <About />
+          <Features />
         </div>
       </div>
     </>

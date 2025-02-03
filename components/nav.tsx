@@ -14,7 +14,7 @@ export default function Nav(){
             <Link href={"/"} className="text-xl font-bold">AnonyLine..</Link>
             <div className="p-3 border-[0.5px] border-[#FFFBFF] bg-[#FBFFFF] bg-opacity-10 backdrop-blur-md rounded-full flex gap-3">
                 <ScrollLink href={"#about"}>About</ScrollLink>
-                <Link href={"/features"}>Features</Link>
+                <ScrollLink href={"#features"}>Features</ScrollLink>
                 <Link href={"/contact"}>Contact</Link>
             </div>
             <Link href={"/login"}>Login</Link>
