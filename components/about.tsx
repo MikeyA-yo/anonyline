@@ -10,13 +10,13 @@ export default function About(){
               <h3 className={`text-2xl font-bold ${rob.className}`}>What is Anonyline?</h3>
             </div>
             <div className="flex flex-col gap-4 text-center z-10">
-              <AnimateDiv initial={{opacity:0, y:"70%"}} whileInView={{opacity:[0.5, 1], y:0}} transition={{duration:0.3, delay:0.2}}>
+              <AnimateDiv initial={{opacity:0, y:"70%"}} whileInView={{opacity:[0.5, 1], y:0}} transition={{duration:0.3, delay:0.2}} viewport={{once:true}}>
                 <p className={`text-lg ${rob.className}`}>Anonyline is a platform where you can share your thoughts, ideas, and opinions anonymously.</p>
               </AnimateDiv>
-              <AnimateDiv initial={{opacity:0, y:"70%"}} whileInView={{opacity:[0.5, 1], y:0}} transition={{duration:0.3, delay:0.3}}>
+              <AnimateDiv initial={{opacity:0, y:"70%"}} whileInView={{opacity:[0.5, 1], y:0}} transition={{duration:0.3, delay:0.3}} viewport={{once:true}}>
                 <p className={`text-lg ${rob.className}`}>You can create a post and share it with the world without revealing your identity.</p>
               </AnimateDiv>
-              <AnimateDiv initial={{opacity:0, y:"70%"}} whileInView={{opacity:[0.5, 1], y:0}} transition={{duration:0.3, delay:0.4}}>
+              <AnimateDiv initial={{opacity:0, y:"70%"}} whileInView={{opacity:[0.5, 1], y:0}} transition={{duration:0.3, delay:0.4}} viewport={{once:true}}>
                 <p className={`text-lg ${rob.className}`}>Explore and Create your own room, where you can talk with people all over the world anonymously</p>
                 </AnimateDiv>
             </div>
