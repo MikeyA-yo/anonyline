@@ -1,4 +1,5 @@
-import { desc } from "motion/react-client";
+
+import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import { FaUserEdit } from "react-icons/fa";
 import { HiUserGroup } from "react-icons/hi2";
 import { RiChatHistoryLine, RiChatPrivateLine } from "react-icons/ri";
@@ -32,6 +33,11 @@ const features = [
     title:"Customize your profile",
     description:"Customize your profile with a unique username and profile picture (optional)",
     icon:<FaUserEdit className="h-12 w-12" />
+  },
+  {
+    title:"Truly Anonymous",
+    description:"No form of tracking, last seen, or online status. Truly anonymous",
+    icon:<AiOutlineSafetyCertificate className="h-12 w-12" />
   }
 ];
 
@@ -74,15 +80,15 @@ function FeatureCard({
   return (
     <>
       <div
-        className="bg-gradient-to-br from-[#7A1CAC] to-[#AD49E1] hover:from-[#AD49E1]/50 hover:to-[#7A1CAC]/50 h-52 w-60 rounded-md p-2 flex flex-col gap-2 items-center text-center md:border-r-0 
+        className="bg-gradient-to-br from-[#7A1CAC] to-[#AD49E1] hover:from-[#AD49E1]/30 hover:to-[#7A1CAC]/30 h-52 w-60 rounded-md p-2 flex flex-col gap-2 items-center text-center md:border-r-0 
                 md:p-4
                 md:[&:not(:last-child)]:border-r 
                 md:[&:nth-child(3n)]:border-r-0
                 border-b last:border-b-0"
       >
         {icon}
-        <h3 className="text-2xl text-[#EBD3F8]">{title}</h3>
-        <p className="text-[#E9FFFF]">{description}</p>
+        <h3 className="text-xl text-[#EBD3F8]">{title}</h3>
+        <p className="text-[#E9FFFF] text-sm">{description}</p>
       </div>
     </>
   );
