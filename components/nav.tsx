@@ -15,7 +15,7 @@ export default function Nav(){
             <div className="p-3 border-[0.5px] border-[#FFFBFF] bg-[#FBFFFF] bg-opacity-10 backdrop-blur-md rounded-full flex gap-3">
                 <ScrollLink href={"#about"}>About</ScrollLink>
                 <ScrollLink href={"#features"}>Features</ScrollLink>
-                <Link href={"/contact"}>Contact</Link>
+                <ScrollLink href={"#contact"}>Contact</ScrollLink>
             </div>
             <Link href={"/login"}>Login</Link>
           </nav>
@@ -46,9 +46,9 @@ function SideBar({}){
                 x:"100vw"
             }}
           >
-            <Link href={"#about"} scroll>About</Link>
-            <Link href={"/features"}>Features</Link>
-            <Link href={"/contact"}>Contact</Link>
+            <ScrollLink href={"#about"}>About</ScrollLink>
+            <ScrollLink href={"#features"}>Features</ScrollLink>
+            <ScrollLink href={"#contact"}>Contact</ScrollLink>
             <Link href={"/login"}>Login</Link>
           </AnimateDiv>
         </>

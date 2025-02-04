@@ -1,4 +1,5 @@
 import About from "./about";
+import Contact from "./contact";
 import Features from "./features";
 import Hero from "./hero";
 import Nav from "./nav";
@@ -13,6 +14,7 @@ export default function Landing() {
           <Hero />
           <About />
           <Features />
+          <Contact />
         </div>
       </div>
     </>
