@@ -16,6 +16,7 @@ export async function POST(req: Request, res: Response) {
     from: process.env.GMAIL,
     to: process.env.GMAIL,
     html: `<p>Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}</p>`,
+    subject:`Message from ${name}`,
   };
   const sendMailPromise = () =>
     new Promise<string>((resolve, reject) => {
