@@ -1,0 +1,32 @@
+@keyframes moving-border {
+    0% {
+      transform: translateX(0) translateY(0);
+    }
+    25% {
+      transform: translateX(100%) translateY(0);
+    }
+    50% {
+      transform: translateX(100%) translateY(100%);
+    }
+    75% {
+      transform: translateX(0) translateY(100%);
+    }
+    100% {
+      transform: translateX(0) translateY(0);
+    }
+  }
+  
+  .hover\:animate-moving-border:hover::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: -1;
+    background: linear-gradient(90deg, #ad49e1 50%, transparent 50%),
+      linear-gradient(180deg, #ad49e1 50%, transparent 50%),
+      linear-gradient(270deg, #ad49e1 50%, transparent 50%),
+      linear-gradient(360deg, #ad49e1 50%, transparent 50%);
+    background-size: 200% 2px, 2px 200%;
+    background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+    background-repeat: no-repeat;
+    animation: moving-border 1.5s linear infinite;
+  }
