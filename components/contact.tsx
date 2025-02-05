@@ -8,7 +8,9 @@ export default function Contact(){
             <div className="z-10">
                 <h3 className={`${inter.className} text-3xl font-bold `}>Contact</h3>
             </div>
-            <div className="grid"></div>
+            <div className="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1">
+                <div></div>
+            </div>
           </div>
         </>
     )
