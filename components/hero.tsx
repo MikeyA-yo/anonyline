@@ -92,6 +92,7 @@ export default function Hero() {
               }
             }}
             className="bg-[#AD49E1] text-[#EBD3F8] px-4 py-2 rounded-lg"
+            onClick={()=>{ document.querySelector("#about")?.scrollIntoView({behavior:"smooth"})}}
           >
             Learn More
           </motion.button>

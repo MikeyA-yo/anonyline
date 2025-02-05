@@ -14,7 +14,7 @@ export default function Contact(){
                 <h3 className={`${inter.className} text-3xl font-bold `}>Contact</h3>
             </div>
             <div className="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 z-10">
-                <div className={`lg:grid-cols-3 grid grid-cols-2 gap-4 ${robMono.className}`}>
+                <div className={`lg:grid-cols-3 grid md:grid-cols-2 grid-cols-1 gap-4 ${robMono.className}`}>
                     <div className="h-52 w-52 bg-[#7A1CAC] shadow-md shadow-[#EBD3F8] flex flex-col items-center hyphens-manual gap-4 p-5 relative hover:animate-moving-border">
                       <MdOutlineEmail className="h-10 w-10 text-[#EBD3F8]" />
                       <h4 className={`text-lg font-bold`}>Email</h4>

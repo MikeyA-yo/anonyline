@@ -49,7 +49,7 @@ function SideBar({}){
             <ScrollLink href={"#about"}>About</ScrollLink>
             <ScrollLink href={"#features"}>Features</ScrollLink>
             <ScrollLink href={"#contact"}>Contact</ScrollLink>
-            <Link href={"/login"}>Login</Link>
+            <button><Link href={"/login"}>Login</Link></button>
           </AnimateDiv>
         </>
     )
