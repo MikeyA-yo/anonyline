@@ -45,7 +45,6 @@ export default function ContactForm() {
     },
     []
   );
-  console.log(loading, error, success);
   return (
     <>
       <div className="flex flex-col gap-4 p-5 items-center bg-[#2E073F] shadow-md shadow-[#EBD3F8] lg:min-h-96 md:min-h-80 md:w-[90%] justify-self-end">
@@ -106,12 +105,12 @@ export default function ContactForm() {
         </InputGrps>
         <button
           disabled={loading}
-          className={`self-end px-2 py-1 bg-[#7A1CAC] rounded ${loading? "animate-spin":""}`}
+          className={`self-end px-2 py-1 bg-[#7A1CAC] rounded`}
           onClick={() => {
             sendMsg(state);
           }}
         >
-          {loading ? <PiSpinnerLight /> : "Send"}
+          {loading ? <PiSpinnerLight className={`${loading? "animate-spin":""}`} /> : "Send"}
         </button>
       </div>
     </>
