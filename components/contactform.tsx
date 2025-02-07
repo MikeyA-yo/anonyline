@@ -117,10 +117,10 @@ export default function ContactForm() {
   );
 }
 
-function InputContainer({ children }: { children: React.ReactNode }) {
+export function InputContainer({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-col flex-[1] gap-2">{children}</div>;
 }
-function InputGrps({ children }: { children: React.ReactNode }) {
+export function InputGrps({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex lg:flex-row flex-col w-full gap-2">{children}</div>
   );
