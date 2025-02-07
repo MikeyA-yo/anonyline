@@ -1,3 +1,4 @@
+"use server"
 import { account, ID } from "@/app/appwrite_config/appwriteConfig";
 import { hash } from "bcrypt";
 
