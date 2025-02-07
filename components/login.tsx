@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { InputContainer, InputGrps } from "./contactform";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { createUser, loginUser } from "./user";
 import { AnimateDiv } from "./nav";
 import { Models } from "appwrite";
+import { PiSpinnerLight } from "react-icons/pi";
 
 export default function Login() {
   const [loginTxt, setLoginTx] = useState("Login to Your Account");
@@ -19,7 +20,24 @@ export default function Login() {
   const [s, setS] = useState(false);
   const [l, setL] = useState(false);
   const [msg, setMsg] = useState("");
-  const [session, setSession] = useState<Models.Session>()
+  const [session, setSession] = useState<Models.Session>();
+  const [user, setUser] = useState<Models.User<Models.Preferences>>();
+  useEffect(()=>{
+    if (user || session){
+        setS(true)
+        setMsg(`${mode.slice(0,1).toUpperCase().concat(mode.slice(1))} Successfull`);
+        if(session){
+            sessionStorage.setItem("user", JSON.stringify(session));
+            location.pathname = "/chat";
+        }else{
+            setMsg("Account creation successful, login to continue");
+            setMode("login");
+            setLoginTx("Login to Your Account");
+            
+        }
+        
+    }
+  }, [session, user])
   return (
     <>
       <div className="min-h-[100svh] grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 bg-[#2E073F]">
@@ -64,63 +82,128 @@ export default function Login() {
                 </p>
               )}
             </div>
-            {mode ==="signup" &&<InputGrps>
-              <InputContainer>
-                <label htmlFor="fname">First Name: </label>
-                <input id="fname" placeholder="Enter your first name (optional)" className="p-2 rounded-md text-[#2E073F]" onChange={(e)=>{
-                    inDp({type:"fName", value:e.target.value})
-                }} />
-              </InputContainer>
-              <InputContainer>
-                <label htmlFor="lname">Last Name: </label>
-                <input id="lname" placeholder="Enter your last name (optional)" className="p-2 rounded-md text-[#2E073F]" onChange={(e)=>{
-                    inDp({type:"lName", value:e.target.value})
-                }}/>
-              </InputContainer>
-            </InputGrps>}
+            {mode === "signup" && (
+              <InputGrps>
+                <InputContainer>
+                  <label htmlFor="fname">First Name: </label>
+                  <input
+                    id="fname"
+                    placeholder="Enter your first name (optional)"
+                    className="p-2 rounded-md text-[#2E073F]"
+                    onChange={(e) => {
+                      inDp({ type: "fName", value: e.target.value });
+                    }}
+                  />
+                </InputContainer>
+                <InputContainer>
+                  <label htmlFor="lname">Last Name: </label>
+                  <input
+                    id="lname"
+                    placeholder="Enter your last name (optional)"
+                    className="p-2 rounded-md text-[#2E073F]"
+                    onChange={(e) => {
+                      inDp({ type: "lName", value: e.target.value });
+                    }}
+                  />
+                </InputContainer>
+              </InputGrps>
+            )}
             <InputGrps>
               <InputContainer>
-               <label htmlFor="em">Email: <span className="text-[#D00000]">*</span></label>
-               <input id="em" placeholder="Enter your email" className="p-2 rounded-md text-[#2E073F]" type="email" onChange={(e)=>{
-                    inDp({type:"email", value:e.target.value})
-                }} />
+                <label htmlFor="em">
+                  Email: <span className="text-[#D00000]">*</span>
+                </label>
+                <input
+                  id="em"
+                  placeholder="Enter your email"
+                  className="p-2 rounded-md text-[#2E073F]"
+                  type="email"
+                  onChange={(e) => {
+                    inDp({ type: "email", value: e.target.value });
+                  }}
+                />
               </InputContainer>
             </InputGrps>
             <InputGrps>
               <InputContainer>
-               <label htmlFor="pw">Password: <span className="text-[#D00000]">*</span></label>
-               <input id="pw" placeholder="Enter your password" className="p-2 rounded-md text-[#2E073F] pl-10" type={!showPw ?"password":"text"} onChange={(e)=>{
-                    inDp({type:"password", value:e.target.value})
-                }}/>
-               <span className="cursor-pointer -translate-y-10 pl-1 w-fit" onClick={()=>{setShowPw(!showPw)}}>{showPw && <FaRegEye className="h-6 w-6 fill-black" />}{!showPw && <FaRegEyeSlash className="h-6 w-6 fill-black"/>}</span>
+                <label htmlFor="pw">
+                  Password: <span className="text-[#D00000]">*</span>
+                </label>
+                <input
+                  id="pw"
+                  placeholder="Enter your password"
+                  className="p-2 rounded-md text-[#2E073F] pl-10"
+                  type={!showPw ? "password" : "text"}
+                  onChange={(e) => {
+                    inDp({ type: "password", value: e.target.value });
+                  }}
+                />
+                <span
+                  className="cursor-pointer -translate-y-10 pl-1 w-fit"
+                  onClick={() => {
+                    setShowPw(!showPw);
+                  }}
+                >
+                  {showPw && <FaRegEye className="h-6 w-6 fill-black" />}
+                  {!showPw && <FaRegEyeSlash className="h-6 w-6 fill-black" />}
+                </span>
               </InputContainer>
             </InputGrps>
-            <button className="bg-[#AD49E1] py-2 rounded" onClick={()=>{
-                if (inState.email.length < 3 || inState.password.length < 4){
-                    // not allowed
-                    setE(true);
-                    setS(false);
-                    setMsg("Email invalid or password not required length")
+            <button
+              className={`bg-[#AD49E1] py-2 rounded ${l ? "flex items-center justify-center w-full":""}`}
+              disabled={l}
+              onClick={() => {
+                if (inState.email.length < 3 || inState.password.length < 8 || !(/^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$/.test(inState.email))) {
+                  // not allowed
+                  setE(true);
+                  setS(false);
+                  setMsg("Email invalid or password not required length");
+                  return
                 }
-                async function action(){
-                    let uName = undefined;
-                    if (inState.fName && inState.lName){
-                      uName = inState.fName.slice(Math.floor(Math.random()*inState.fName.length), Math.floor(Math.random()*inState.fName.length)) + inState.lName.slice(Math.floor(Math.random()*inState.lName.length), Math.floor(Math.random()*inState.lName.length))
-                    }
-                    setL(true)
-                    switch (mode){
-                        case "login":
-                        let ss = await loginUser(inState.email, inState.password);
+                async function action() {
+                  let uName = undefined;
+                  if (inState.fName && inState.lName) {
+                    uName =
+                      inState.fName.slice(
+                        Math.floor(Math.random() * inState.fName.length),
+                        Math.floor(Math.random() * inState.fName.length)
+                      ) +
+                      inState.lName.slice(
+                        Math.floor(Math.random() * inState.lName.length),
+                        Math.floor(Math.random() * inState.lName.length)
+                      );
+                  }
+                  setL(true);
+                  try {
+                    switch (mode) {
+                      case "login":
+                        let ss = await loginUser(
+                          inState.email,
+                          inState.password
+                        );
                         setSession(ss);
-                         break;
-                        default:
-                         let user = await createUser(inState.email, inState.password, uName); 
-                         
-                     }
-                     setL(false)
+                        break;
+                      default:
+                        let user = await createUser(
+                          inState.email,
+                          inState.password,
+                          uName
+                        );
+                        setUser(user);
+                    }
+                  } catch (e: any) {
+                    setL(false);
+                    setE(true);
+                    setMsg("Internal error occured: " + e.message);
+                  }
+                  setL(false);
                 }
-                action()
-            }}>{mode == "login" ? "Login ": "Sign up"}</button>
+                action();
+              }}
+            >
+              {!l && (mode == "login" ? "Login " : "Sign up")}
+              {l && <PiSpinnerLight className="animate-spin" />}
+            </button>
           </div>
         </div>
       </div>
@@ -128,38 +211,48 @@ export default function Login() {
   );
 }
 
-function Msg({msg,type}:{msg:string; type:string}){
-    if (type == "e"){
-      return (
-        <AnimateDiv initial={{
-            opacity: 0,
-            y: -10,
-          }} animate={{
-            opacity: 1,
-            y: 0,
-          }} transition={{
-            duration: 0.3,
-            ease: "easeInOut",
-          }} className="bg-[#D00000] w-full p-3 rounded">
-            {msg}
-          </AnimateDiv>
-      )
-    }else {
-      return (
-        <AnimateDiv initial={{
-            opacity: 0,
-            y: -10,
-          }} animate={{
-            opacity: 1,
-            y: 0,
-          }} transition={{
-            duration: 0.3,
-            ease: "easeInOut",
-          }} className="bg-[#5D8736] w-full p-3 rounded">
-            {msg}
-          </AnimateDiv>
-      )
-    }
+function Msg({ msg, type }: { msg: string; type: string }) {
+  if (type == "e") {
+    return (
+      <AnimateDiv
+        initial={{
+          opacity: 0,
+          y: -10,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
+        }}
+        className="bg-[#D00000] w-full p-3 rounded"
+      >
+        {msg}
+      </AnimateDiv>
+    );
+  } else {
+    return (
+      <AnimateDiv
+        initial={{
+          opacity: 0,
+          y: -10,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
+        }}
+        className="bg-[#5D8736] w-full p-3 rounded"
+      >
+        {msg}
+      </AnimateDiv>
+    );
+  }
 }
 
 interface InputState {
