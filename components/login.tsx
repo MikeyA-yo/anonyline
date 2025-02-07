@@ -7,6 +7,7 @@ import { createUser, loginUser } from "./user";
 import { AnimateDiv } from "./nav";
 import { Models } from "appwrite";
 import { PiSpinnerLight } from "react-icons/pi";
+import { useLocalSession } from "./use-session";
 
 export default function Login() {
   const [loginTxt, setLoginTx] = useState("Login to Your Account");
@@ -22,6 +23,12 @@ export default function Login() {
   const [msg, setMsg] = useState("");
   const [session, setSession] = useState<Models.Session>();
   const [user, setUser] = useState<Models.User<Models.Preferences>>();
+  const localSession = useLocalSession()
+  useEffect(()=>{
+    if (localSession.$id){
+        location.pathname = "/chat";
+      }
+  },[])
   useEffect(()=>{
     if (user || session){
         setS(true)
