@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useEffect, useReducer, useState } from "react";
 import { InputContainer, InputGrps } from "./contactform";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { createUser, loginUser } from "./user";
+import { createUser, getUser, loginUser } from "./user";
 import { AnimateDiv } from "./nav";
 import { Models } from "appwrite";
 import { PiSpinnerLight } from "react-icons/pi";
@@ -23,12 +23,13 @@ export default function Login() {
   const [msg, setMsg] = useState("");
   const [session, setSession] = useState<Models.Session>();
   const [user, setUser] = useState<Models.User<Models.Preferences>>();
-  const localSession = useLocalSession()
-  useEffect(()=>{
-    if (localSession.$id){
-        location.pathname = "/chat";
-      }
-  },[])
+  // const localSession = useLocalSession()
+  // useEffect(()=>{
+  //   if (localSession.$id){
+  //       location.pathname = "/chat";
+  //     }
+  // },[])
+  getUser().then(res=> console.log(res))
   useEffect(()=>{
     if (user || session){
         setS(true)

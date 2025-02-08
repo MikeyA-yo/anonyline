@@ -13,3 +13,9 @@ export async function loginUser(email:string, password:string){
     const session = await account.createEmailPasswordSession(email, password);
     return session
 }
+
+export async function getUser (){
+  const user = await account.get();
+  console.log(user)
+  return user;
+}
