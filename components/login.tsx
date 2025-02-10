@@ -3,11 +3,10 @@ import Image from "next/image";
 import { useEffect, useReducer, useState } from "react";
 import { InputContainer, InputGrps } from "./contactform";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { createUser, getUser, loginUser } from "./user";
+import { createUser,  loginUser } from "./user";
 import { AnimateDiv } from "./nav";
 import { Models } from "appwrite";
 import { PiSpinnerLight } from "react-icons/pi";
-import { useLocalSession } from "./use-session";
 
 export default function Login() {
   const [loginTxt, setLoginTx] = useState("Login to Your Account");
@@ -23,26 +22,21 @@ export default function Login() {
   const [msg, setMsg] = useState("");
   const [session, setSession] = useState<Models.Session>();
   const [user, setUser] = useState<Models.User<Models.Preferences>>();
-  // const localSession = useLocalSession()
-  // useEffect(()=>{
-  //   if (localSession.$id){
-  //       location.pathname = "/chat";
-  //     }
-  // },[])
-  getUser().then(res=> console.log(res))
+  
+ 
   useEffect(()=>{
     if (user || session){
         setS(true)
         setMsg(`${mode.slice(0,1).toUpperCase().concat(mode.slice(1))} Successfull`);
-        if(session){
-            sessionStorage.setItem("user", JSON.stringify(session));
-            location.pathname = "/chat";
-        }else{
-            setMsg("Account creation successful, login to continue");
-            setMode("login");
-            setLoginTx("Login to Your Account");
+        // if(session){
+        //     sessionStorage.setItem("user", JSON.stringify(session));
+        //     location.pathname = "/chat";
+        // }else{
+        //     setMsg("Account creation successful, login to continue");
+        //     setMode("login");
+        //     setLoginTx("Login to Your Account");
             
-        }
+        // }
         
     }
   }, [session, user])
