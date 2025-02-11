@@ -7,7 +7,7 @@ import { createUser, loginUser } from "./user";
 import { AnimateDiv } from "./nav";
 import { Models } from "appwrite";
 import { PiSpinnerLight } from "react-icons/pi";
-import { CreateLogin } from "./login-actions";
+import { CreateAcct, CreateLogin } from "./login-actions";
 
 export default function Login() {
   const [loginTxt, setLoginTx] = useState("Login to Your Account");
@@ -21,19 +21,19 @@ export default function Login() {
   const [s, setS] = useState(false);
   const [l, setL] = useState(false);
   const [msg, setMsg] = useState("");
-  const [session, setSession] = useState<Models.Session>();
-  const [user, setUser] = useState<Models.User<Models.Preferences>>();
-  const [fState, action, fL] = useActionState(CreateLogin, undefined)
-  
+  // const [session, setSession] = useState<Models.Session>();
+  // const [user, setUser] = useState<Models.User<Models.Preferences>>();
+  const [fState, lAction, fL] = useActionState(CreateLogin, undefined)
+  const [sfState, sAction, sL] = useActionState(CreateAcct, undefined) 
 
-  useEffect(()=>{
-    if (user || session){
-        setS(true)
-        setMsg(`${mode.slice(0,1).toUpperCase().concat(mode.slice(1))} Successfull`);
+  // useEffect(()=>{
+  //   if (user || session){
+  //       setS(true)
+  //       setMsg(`${mode.slice(0,1).toUpperCase().concat(mode.slice(1))} Successfull`);
        
         
-    }
-  }, [session, user])
+  //   }
+  // }, [session, user])
   return (
     <>
       <div className="min-h-[100svh] grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 bg-[#2E073F]">
@@ -48,6 +48,7 @@ export default function Login() {
         <div className="flex flex-col items-center justify-center p-5 text-[#EBD3F8]">
           <div className="flex flex-col p-5 rounded bg-[#7A1CAC] gap-6">
             {(e || s) && <Msg type={e ? "e" : "s"} msg={msg} />}
+            {fState?.errors && <Msg type="e" msg={`Error occured ${fState.errors.email ?? fState.errors.password}`} />}
             <h2 className="text-3xl font-semibold">{loginTxt}</h2>
             <div>
               {mode === "login" ? (
@@ -78,6 +79,7 @@ export default function Login() {
                 </p>
               )}
             </div>
+            <form className="flex flex-col gap-5" action={mode === "signup" ? sAction : lAction}>
             {mode === "signup" && (
               <InputGrps>
                 <InputContainer>
@@ -111,6 +113,7 @@ export default function Login() {
                 </label>
                 <input
                   id="em"
+                  name="email"
                   placeholder="Enter your email"
                   className="p-2 rounded-md text-[#2E073F]"
                   type="email"
@@ -127,6 +130,7 @@ export default function Login() {
                 </label>
                 <input
                   id="pw"
+                  name="password"
                   placeholder="Enter your password"
                   className="p-2 rounded-md text-[#2E073F] pl-10"
                   type={!showPw ? "password" : "text"}
@@ -146,60 +150,14 @@ export default function Login() {
               </InputContainer>
             </InputGrps>
             <button
-              className={`bg-[#AD49E1] py-2 rounded ${l ? "flex items-center justify-center w-full":""}`}
-              disabled={l}
-              onClick={() => {
-                if (inState.email.length < 3 || inState.password.length < 8 || !(/^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$/.test(inState.email))) {
-                  // not allowed
-                  setE(true);
-                  setS(false);
-                  setMsg("Email invalid or password not required length");
-                  return
-                }
-                async function action() {
-                  let uName = undefined;
-                  if (inState.fName && inState.lName) {
-                    uName =
-                      inState.fName.slice(
-                        Math.floor(Math.random() * inState.fName.length),
-                        Math.floor(Math.random() * inState.fName.length)
-                      ) +
-                      inState.lName.slice(
-                        Math.floor(Math.random() * inState.lName.length),
-                        Math.floor(Math.random() * inState.lName.length)
-                      );
-                  }
-                  setL(true);
-                  try {
-                    switch (mode) {
-                      case "login":
-                        let ss = await loginUser(
-                          inState.email,
-                          inState.password
-                        );
-                        setSession(ss);
-                        break;
-                      default:
-                        let user = await createUser(
-                          inState.email,
-                          inState.password,
-                          uName
-                        );
-                        setUser(user);
-                    }
-                  } catch (e: any) {
-                    setL(false);
-                    setE(true);
-                    setMsg("Internal error occured: " + e.message);
-                  }
-                  setL(false);
-                }
-                action();
-              }}
+              className={`bg-[#AD49E1] py-2 rounded ${!(!fL && !sL) ? "flex items-center justify-center w-full":""}`}
+              disabled={!(!fL && !sL)}
+              type="submit"
             >
-              {!l && (mode == "login" ? "Login " : "Sign up")}
-              {l && <PiSpinnerLight className="animate-spin" />}
+              {!fL && !sL && (mode == "login" ? "Login " : "Sign up")}
+              {!(!fL && !sL) && <PiSpinnerLight className="animate-spin" />}
             </button>
+            </form>
           </div>
         </div>
       </div>
