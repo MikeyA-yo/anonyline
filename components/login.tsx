@@ -8,32 +8,31 @@ import { AnimateDiv } from "./nav";
 import { Models } from "appwrite";
 import { PiSpinnerLight } from "react-icons/pi";
 import { CreateAcct, CreateLogin } from "./login-actions";
+import { useClientSession } from "./use-session";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [loginTxt, setLoginTx] = useState("Login to Your Account");
+  const user = useClientSession();
+  const router = useRouter()
   const [mode, setMode] = useState("login");
   const [inState, inDp] = useReducer(reducer, {
     email: "",
     password: "",
   });
   const [showPw, setShowPw] = useState(false);
-  const [e, setE] = useState(false);
-  const [s, setS] = useState(false);
-  const [l, setL] = useState(false);
-  const [msg, setMsg] = useState("");
-  // const [session, setSession] = useState<Models.Session>();
-  // const [user, setUser] = useState<Models.User<Models.Preferences>>();
   const [fState, lAction, fL] = useActionState(CreateLogin, undefined)
   const [sfState, sAction, sL] = useActionState(CreateAcct, undefined) 
-
-  // useEffect(()=>{
-  //   if (user || session){
-  //       setS(true)
-  //       setMsg(`${mode.slice(0,1).toUpperCase().concat(mode.slice(1))} Successfull`);
-       
-        
-  //   }
-  // }, [session, user])
+  useEffect(()=>{
+    if (user?.$id){
+      router.push("/chat");
+    }
+  }, [user])
+  useEffect(()=>{
+    if (sfState?.success){
+      setMode("login")
+    }
+  }, [sfState])
   return (
     <>
       <div className="min-h-[100svh] grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 bg-[#2E073F]">
@@ -47,9 +46,8 @@ export default function Login() {
         </div>
         <div className="flex flex-col items-center justify-center p-5 text-[#EBD3F8]">
           <div className="flex flex-col p-5 rounded bg-[#7A1CAC] gap-6">
-            {(e || s) && <Msg type={e ? "e" : "s"} msg={msg} />}
             {fState?.errors && <Msg type="e" msg={`Error occured ${fState.errors.email ?? fState.errors.password}`} />}
-            {sfState?.errors && <Msg type="e" msg={`Error occured ${sfState.errors.email ?? sfState.errors.password}`} />}
+            {sfState?.errors && <Msg type="e" msg={`Error occured ${sfState.errors.email ?? sfState.errors.password ?? sfState.errors.message}`} />}
             {sfState?.success && <Msg type="s" msg={`${sfState.success}`} />}
             <h2 className="text-3xl font-semibold">{loginTxt}</h2>
             <div>
@@ -121,6 +119,7 @@ export default function Login() {
                   placeholder="Enter your email"
                   className="p-2 rounded-md text-[#2E073F]"
                   type="email"
+                  value={inState.email}
                   onChange={(e) => {
                     inDp({ type: "email", value: e.target.value });
                   }}
@@ -138,6 +137,7 @@ export default function Login() {
                   placeholder="Enter your password"
                   className="p-2 rounded-md text-[#2E073F] pl-10"
                   type={!showPw ? "password" : "text"}
+                  value={inState.password}
                   onChange={(e) => {
                     inDp({ type: "password", value: e.target.value });
                   }}

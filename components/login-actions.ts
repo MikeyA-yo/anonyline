@@ -33,21 +33,25 @@ export async function CreateLogin(formState: any, formData: FormData) {
 }
 
 export async function CreateAcct(formState: any, formData: FormData) {
-  const pwd = formData.get("password")?.toString();
-  const em = formData.get("email")?.toString();
-  const nm = (formData.get("lname")?.toString() ?? Math.floor(Math.random()*300).toString(16) + formData.get("fname")?.toString());
-  const data = loginSChema.safeParse({password:pwd, email:em, name:nm});
-  if (!data.success) {
-    console.log(data.error.errors);
-    return {
-      errors: data.error.flatten().fieldErrors,
-    };
-  }
-  const {name, email, password} = data.data;
-  const res = await createUser(email, password, name);
-  if (res){
-    return {
-        success: "Successful, now login"
+  try {const pwd = formData.get("password")?.toString();
+    const em = formData.get("email")?.toString();
+    const nm = (formData.get("lname")?.toString() ?? Math.floor(Math.random()*300).toString(16) + formData.get("fname")?.toString());
+    const data = loginSChema.safeParse({password:pwd, email:em, name:nm});
+    if (!data.success) {
+      console.log(data.error.errors);
+      return {
+        errors: data.error.flatten().fieldErrors,
+      };
     }
-  }
+    const {name, email, password} = data.data;
+    const res = await createUser(email, password, name);
+    if (res){
+      return {
+          success: "Successful, now login"
+      }
+    }} catch (e:any){
+        return {
+            errors: e.message
+        }
+    }
 }
