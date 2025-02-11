@@ -3,7 +3,7 @@ import { Client, Account } from "node-appwrite";
 import { cookies } from "next/headers";
 
 export async function createSessionClient(){
-    const client = new Client().setEndpoint(process.env.APPWRITE_URL as string).setProject(process.env.APPWRITE_ID as string).setKey(process.env.APPWRITE_KEY as string);
+    const client = new Client().setEndpoint(process.env.APPWRITE_URL as string).setProject(process.env.APPWRITE_ID as string);
     const cookieStore = await cookies()
     const session = cookieStore.get("user");
   if (!session || !session.value) {
@@ -11,6 +11,7 @@ export async function createSessionClient(){
   }
   console.log(session)
   client.setSession(session.value);
+  
   return {
     get account() {
       return new Account(client);
@@ -19,7 +20,7 @@ export async function createSessionClient(){
 }
 
 export async function createUserClient(){
-  const client = new Client().setEndpoint(process.env.APPWRITE_URL as string).setProject(process.env.APPWRITE_ID as string);
+  const client = new Client().setEndpoint(process.env.APPWRITE_URL as string).setProject(process.env.APPWRITE_ID as string).setKey(process.env.APPWRITE_KEY as string);
   return {
     get account(){
       return new Account(client)

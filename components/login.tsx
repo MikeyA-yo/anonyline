@@ -49,6 +49,8 @@ export default function Login() {
           <div className="flex flex-col p-5 rounded bg-[#7A1CAC] gap-6">
             {(e || s) && <Msg type={e ? "e" : "s"} msg={msg} />}
             {fState?.errors && <Msg type="e" msg={`Error occured ${fState.errors.email ?? fState.errors.password}`} />}
+            {sfState?.errors && <Msg type="e" msg={`Error occured ${sfState.errors.email ?? sfState.errors.password}`} />}
+            {sfState?.success && <Msg type="s" msg={`${sfState.success}`} />}
             <h2 className="text-3xl font-semibold">{loginTxt}</h2>
             <div>
               {mode === "login" ? (
@@ -86,6 +88,7 @@ export default function Login() {
                   <label htmlFor="fname">First Name: </label>
                   <input
                     id="fname"
+                    name="fname"
                     placeholder="Enter your first name (optional)"
                     className="p-2 rounded-md text-[#2E073F]"
                     onChange={(e) => {
@@ -97,6 +100,7 @@ export default function Login() {
                   <label htmlFor="lname">Last Name: </label>
                   <input
                     id="lname"
+                    name="lname"
                     placeholder="Enter your last name (optional)"
                     className="p-2 rounded-md text-[#2E073F]"
                     onChange={(e) => {
