@@ -1,5 +1,6 @@
-import { getUser } from "@/components/user";
+import { getSafeUser } from "@/components/getUser";
 
 export async function GET(req:Request, res:Response){
-   return Response.json(await getUser());
+   const user = await getSafeUser();
+   return Response.json(user);
 }

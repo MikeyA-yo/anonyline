@@ -5,9 +5,12 @@ import { useState } from "react";
 import { HiBars3BottomRight } from "react-icons/hi2";
 import { MdClose } from "react-icons/md";
 import { ScrollLink } from "./ay-scroll";
+import { useClientSession } from "./use-session";
+import { Models } from "appwrite";
 
 export default function Nav(){
     const [open, setOpen] = useState(false);
+    const user = useClientSession();
     return (
         <>
           <nav className="backdrop-blur-md lg:flex md:flex hidden items-center shadow-sm shadow-[#7A1CAC] justify-evenly w-full fixed p-5 z-20 text-white">
@@ -17,20 +20,20 @@ export default function Nav(){
                 <ScrollLink href={"#features"}>Features</ScrollLink>
                 <ScrollLink href={"#contact"}>Contact</ScrollLink>
             </div>
-            <Link href={"/login"}>Login</Link>
+            <Link href={user?"/chat":"/login"}>{user ? "Chat": "Login"}</Link>
           </nav>
           <nav className="lg:hidden z-30 md:hidden fixed w-full flex items-center text-white p-3 backdrop-blur-md justify-between">
             <Link href={"/"} className="text-xl font-bold">AnonyLine..</Link>
             <Bar open={open} setOpen={setOpen} />
           </nav>
           <AnimatePresence>
-                {open && <SideBar />}
+                {open && <SideBar user={user} />}
             </AnimatePresence>
         </>
     )
 }
 export const AnimateDiv = motion.div;
-function SideBar({}){
+function SideBar({user}:{user:Models.User<Models.Preferences> | undefined}){
     return (
         <>
           <AnimateDiv className="flex flex-col gap-3 pt-16 h-screen fixed backdrop-blur-md w-full text-white px-5 z-20" initial={{
@@ -49,7 +52,7 @@ function SideBar({}){
             <ScrollLink href={"#about"}>About</ScrollLink>
             <ScrollLink href={"#features"}>Features</ScrollLink>
             <ScrollLink href={"#contact"}>Contact</ScrollLink>
-            <button><Link href={"/login"}>Login</Link></button>
+            <button><Link href={user?"/chat":"/login"}>{user ? "Chat": "Login"}</Link></button>
           </AnimateDiv>
         </>
     )

@@ -3,9 +3,7 @@ import Image from "next/image";
 import { useActionState, useEffect, useReducer, useState } from "react";
 import { InputContainer, InputGrps } from "./contactform";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { createUser, loginUser } from "./user";
 import { AnimateDiv } from "./nav";
-import { Models } from "appwrite";
 import { PiSpinnerLight } from "react-icons/pi";
 import { CreateAcct, CreateLogin } from "./login-actions";
 import { useClientSession } from "./use-session";
@@ -46,7 +44,7 @@ export default function Login() {
         </div>
         <div className="flex flex-col items-center justify-center p-5 text-[#EBD3F8]">
           <div className="flex flex-col p-5 rounded bg-[#7A1CAC] gap-6">
-            {fState?.errors && <Msg type="e" msg={`Error occured ${fState.errors.email ?? fState.errors.password}`} />}
+            {fState?.errors && <Msg type="e" msg={`Error occured ${fState.errors.email ? "Email invalid": fState.errors.password?"Password invalid":"Unknown, likely network" }`} />}
             {sfState?.errors && <Msg type="e" msg={`Error occured ${sfState.errors.email ?? sfState.errors.password ?? sfState.errors.message}`} />}
             {sfState?.success && <Msg type="s" msg={`${sfState.success}`} />}
             <h2 className="text-3xl font-semibold">{loginTxt}</h2>
