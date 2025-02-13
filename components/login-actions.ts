@@ -25,7 +25,7 @@ export async function CreateLogin(formState: any, formData: FormData) {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      expires: new Date(Date.now() + 4 * 7 * 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + 30 * 7 * 24 * 60 * 60 * 1000),
     });
     console.log(cookieStore.get("user"), session);
     return redirect("/chat");

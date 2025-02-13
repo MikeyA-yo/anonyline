@@ -5,7 +5,7 @@ export default async function SideBar(){
    if (!user) return redirect("/login");
     return (
         <>
-          <nav>Hy world</nav>
+          <nav className="fixed h-screen overflow-auto"></nav>
         </>
     )
 }
