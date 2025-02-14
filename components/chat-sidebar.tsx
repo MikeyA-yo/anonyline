@@ -1,11 +1,12 @@
-import { redirect } from "next/navigation"
-import { getSafeUser } from "./getUser"
+import ChatMenu from "./chat-bar-menu";
+
 export default async function SideBar(){
-  const user = await getSafeUser();
-   if (!user) return redirect("/login");
+  
     return (
         <>
-          <nav className="fixed h-screen overflow-auto"></nav>
+          <nav className="fixed h-screen overflow-auto p-5 bg-[#2E073F]">
+            <ChatMenu />
+          </nav>
         </>
     )
 }
