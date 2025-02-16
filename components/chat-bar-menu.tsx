@@ -25,7 +25,7 @@ export default function ChatMenu({roomsId}:{roomsId:string[]}) {
         ))}
         {/* Menu for creating a room */}
         <div className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-500 ease-linear  hover:rounded-md cursor-pointer my-4  h-12 w-12 flex items-center justify-center">
-          <FaPlusCircle />
+         <Link href={`/chat/find`}> <FaPlusCircle /></Link>
         </div>
       </div>
     </>
