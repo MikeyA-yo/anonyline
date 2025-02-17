@@ -1,4 +1,6 @@
-export default function ChatPage(){
+import { Models } from "appwrite";
+
+export default function ChatPage({user}:{user:Models.User<Models.Preferences>}){
     return (
         <>
           {/* <div className="bg-[#7A1CAC]">
