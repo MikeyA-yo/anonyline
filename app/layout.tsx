@@ -13,7 +13,10 @@ import "./globals.css";
 // });
 
 export const metadata: Metadata = {
-  title: "Anonyline..",
+  title: {
+    template:"%s | Anonyline",
+    default:"Anonyline..",
+  },
   description: "Anonyline is a very simple anonymous chat application",
 };
 

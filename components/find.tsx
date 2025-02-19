@@ -1,9 +1,10 @@
+"use client";
 import { FaSearch } from "react-icons/fa";
 
 export default function Find() {
   return (
     <>
-      <div className="h-screen overflow-auto w-full bg-[#313338] flex flex-col items-center gap-4">
+      <div className="h-screen px-5 overflow-auto w-full bg-[#313338] flex flex-col items-center gap-4">
         <div className="flex text-center flex-col items-center pt-20 gap-2">
           <div className="bg-[#7A1CAC] rounded-full h-24 w-24 items-center justify-center flex">
             <FaSearch className="h-12 w-12 fill-[#EBD3F8]" />{" "}

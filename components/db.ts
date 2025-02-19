@@ -9,3 +9,13 @@ export async function rooms (user:Models.User<Models.Preferences>) {
 export async function createRoom(){
     const {database} = await  createSessionDB();
 }
+
+export async function listRooms(){
+    const {database} = await  createSessionDB();
+    return database.listDocuments(process.env.DATABASE_ID as string, process.env.ROOMS as string);
+}
+
+export async function listUsers(){
+    const {database} = await  createSessionDB();
+    return database.listDocuments(process.env.DATABASE_ID as string, process.env.USERS as string);   
+}
