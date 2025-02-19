@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-const useAPI = (path:string, method:method, body?:any) => {
+const useAPI = (path:string, method?:method, body?:any) => {
+  if (!method) method = "GET";
   const [res, setRes] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
@@ -11,7 +12,7 @@ const useAPI = (path:string, method:method, body?:any) => {
         async function get(){
             setLoading(true);
             try {
-                const res = await fetch(`/${path}`);
+                const res = await fetch(`/api/${path}`);
                 const data = await res.json();
                 setRes(data);
             } catch (error) {
@@ -25,7 +26,7 @@ const useAPI = (path:string, method:method, body?:any) => {
         async function post(){
             setLoading(true);
             try {
-                const res = await fetch(`/${path}`, {
+                const res = await fetch(`/api/${path}`, {
                     method: method,
                     body: JSON.stringify(body),
                     headers: {
@@ -48,7 +49,7 @@ const useAPI = (path:string, method:method, body?:any) => {
         async function get(){
             setLoading(true);
             try {
-                const res = await fetch(`/${path}`);
+                const res = await fetch(`/api/${path}`);
                 const data = await res.json();
                 setRes(data);
             } catch (error) {
