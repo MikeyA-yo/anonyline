@@ -7,7 +7,7 @@ import { Models } from "node-appwrite";
 
 
 function resultReducer (state:any, action:any){
-  return {[action.type]:action.value, ...state}
+  return {...state, [action.type]:action.value}
 }
 export default function Find({user}:{user:Models.User<Models.Preferences>}) {
   const {res:Rooms, error, loading} = useAPI("rooms");
@@ -20,19 +20,24 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
     user:[]
   })
   useEffect(()=>{
-    if(Rooms && Users){
-      dispatch({type:"room", value:Rooms.documents})
+    if(Rooms){
+      dispatch({type:"room", value:Rooms.documents});
+    }
+    if(Users){
       dispatch({type:"user", value:Users.documents})
-      dispatch({type:"result", value:[...Rooms.documents, ...Users.documents]})
     }
   },[Rooms, Users])
+  useEffect(()=>{
+    dispatch({type:"result", value:[...result.room,...result.user]})
+    console.log(result.room, result.user)
+  },[result.room, result.user])
   useEffect(()=>{
     if(input.length > 0){
       dispatch({type:"result", value:[...result.room, ...result.user].filter((room:any)=>room.$id.toLowerCase().includes(input.toLowerCase()))})
     }else if (input.length === 0){
       dispatch({type:"result", value:[...result.room, ...result.user]}) 
     }
-  },[input])
+  }, [input, result.room, result.user]) // Add missing dependencies
   return (
     <>
       <div className="h-screen px-5 overflow-auto w-full bg-[#313338] flex flex-col items-center gap-4">
@@ -56,8 +61,11 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
             }}
           />
         </div>
-        {isCreate && <RoomForm user={user} close={()=>{
-          setIsCreate(false)
+        {isCreate && <RoomForm user={user} close={(b)=>{
+          if (b){
+            dispatch({type:"result", value:[...result.result, b]}) 
+          }
+          setIsCreate(false);
         }} />}
         {result.result.length === 0 && <NotFound create={()=>{
           setIsCreate(true);

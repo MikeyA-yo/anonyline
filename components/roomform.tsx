@@ -7,7 +7,7 @@ import { Models } from "appwrite";
 import useAPI from "./hooks/useapi";
 import { PiSpinnerLight } from "react-icons/pi";
 
-export default function RoomForm({close, user}:{close:()=>void; user:Models.User<Models.Preferences>}) {
+export default function RoomForm({close, user}:{close:(b?:any)=>void; user:Models.User<Models.Preferences>}) {
   const {res:Room, error, loading, run} = useAPI("rooms/create", "POST");
   const [e, setE] = useState(false);
   const [etxt, setETxt] = useState("");
@@ -23,8 +23,9 @@ export default function RoomForm({close, user}:{close:()=>void; user:Models.User
       setE(true);
       setETxt(error)
     }
-    if (Room){
-      console.log(Room)
+    if (Room && typeof Room !== "string"){
+      setE(false);
+      close(Room);
     }
   },[Room, error])
   return (
@@ -34,8 +35,8 @@ export default function RoomForm({close, user}:{close:()=>void; user:Models.User
       }
     }}>
       <div className="flex flex-col gap-4 bg-[#2E073F] p-5 text-[#EBD3F8]" ref={formRef}>
-        {e && <p>Error Creating Room: </p>}
-        {Room && <p>Room Created</p>}
+        {e && <p className="text-[#913423]">Error Creating Room: {etxt} </p>}
+        {Room && typeof Room !== "string" && <p className="text-[#349223]">Room Created: {Room.name}</p>}
         <InputGrps>
           <InputContainer>
             <label>Room Name:</label>
@@ -68,7 +69,6 @@ export default function RoomForm({close, user}:{close:()=>void; user:Models.User
             let buffer = formField.profilePicture ? await formField.profilePicture.arrayBuffer() : null;
             let bufU8 = new Uint8Array(buffer as ArrayBuffer);
             let bufArr = Array.from(bufU8);
-            console.log(buffer.toString(), buffer, bufArr)
             run("rooms/create", "POST", {
               name: formField.roomName,
               description: formField.roomDescription,
