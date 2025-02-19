@@ -12,16 +12,16 @@ export default function RoomForm({close}:{close:()=>void}) {
         close()
       }
     }}>
-      <div className="flex flex-col gap-4 bg-[#2E073F]" ref={formRef}>
+      <div className="flex flex-col gap-4 bg-[#2E073F] p-5 text-[#EBD3F8]" ref={formRef}>
         <InputGrps>
           <InputContainer>
             <label>Room Name:</label>
-            <input className="p-2" placeholder="e.g: mikeydiscussionforum" />
+            <input className="p-2 outline-none rounded border border-[#7A1CAC] text-[#AD49E1]" placeholder="e.g: mikeydiscussionforum" />
           </InputContainer>
           <InputContainer>
             <label>Room Description:</label>
             <input
-              className="p-2"
+              className="p-2 outline-none rounded border border-[#7A1CAC] text-[#AD49E1]"
               placeholder="e.g: a community to discuss,God, Programming and Anime"
             />
           </InputContainer>
@@ -32,6 +32,10 @@ export default function RoomForm({close}:{close:()=>void}) {
             <input type="file" className="p-2" accept="image/*" />
           </InputContainer>
         </InputGrps>
+        <div className="self-end flex gap-4">
+          <button className="bg-[#7A1CAC] px-2 py-1 rounded">Create</button>
+          <button className="bg-[#7A1CAC] px-2 py-1 rounded" onClick={close}>Cancel</button>
+        </div>
       </div>
     </Dialog>
   );
