@@ -13,6 +13,9 @@ const useAPI = (path:string, method?:method, body?:any) => {
             setLoading(true);
             try {
                 const res = await fetch(`/api/${path}`);
+                if (!res.ok){
+                    setError(res.statusText);
+                }
                 const data = await res.json();
                 setRes(data);
             } catch (error) {
@@ -33,6 +36,9 @@ const useAPI = (path:string, method?:method, body?:any) => {
                         "Content-Type": "application/json"
                     }
                 });
+                if (!res.ok){
+                    setError(res.statusText);
+                }
                 const data = await res.json();
                 setRes(data);
             } catch (error) {
@@ -50,6 +56,9 @@ const useAPI = (path:string, method?:method, body?:any) => {
             setLoading(true);
             try {
                 const res = await fetch(`/api/${path}`);
+                if (!res.ok){
+                    setError(res.statusText);
+                }
                 const data = await res.json();
                 setRes(data);
             } catch (error) {

@@ -3,12 +3,13 @@ import { FaSearch } from "react-icons/fa";
 import useAPI from "./hooks/useapi";
 import { use, useEffect, useReducer, useState } from "react";
 import RoomForm from "./roomform";
+import { Models } from "node-appwrite";
 
 
 function resultReducer (state:any, action:any){
   return {[action.type]:action.value, ...state}
 }
-export default function Find() {
+export default function Find({user}:{user:Models.User<Models.Preferences>}) {
   const {res:Rooms, error, loading} = useAPI("rooms");
   const {res:Users, error:e, loading:userLoad} = useAPI("users");
   const [isCreate, setIsCreate] = useState(false);
@@ -55,7 +56,7 @@ export default function Find() {
             }}
           />
         </div>
-        {isCreate && <RoomForm close={()=>{
+        {isCreate && <RoomForm user={user} close={()=>{
           setIsCreate(false)
         }} />}
         {result.result.length === 0 && <NotFound create={()=>{
@@ -72,7 +73,7 @@ function NotFound({create}:{create: () => void}) {
       <h1 className="text-2xl font-bold text-[#EBD3F8]">
         No results found
       </h1>
-      <p className="text-[#a5a6a3]">  
+      <p className="text-[#a5a6a3] text-center">  
         Try searching for something else or <span className="cursor-pointer underline" onClick={()=>{
           create();
         }}>Create a new room</span>

@@ -1,5 +1,5 @@
 "use server";
-import { Client, Account, Databases } from "node-appwrite";
+import { Client, Account, Databases, Storage } from "node-appwrite";
 import { cookies } from "next/headers";
 
 export async function createSessionClient(){
@@ -32,7 +32,20 @@ export async function createSessionDB(){
     }
   }
 }
-
+export async function createSessionStorage(){
+  const client = new Client().setEndpoint(process.env.APPWRITE_URL as string).setProject(process.env.APPWRITE_ID as string);
+    const cookieStore = await cookies()
+    const session = cookieStore.get("user");
+  if (!session ||!session.value) {
+     throw new Error("No session");
+  }
+  client.setSession(session.value);
+  return {
+    get storage(){
+      return new Storage(client)
+    }
+  }
+}
 export async function createUserClient(){
   const client = new Client().setEndpoint(process.env.APPWRITE_URL as string).setProject(process.env.APPWRITE_ID as string).setKey(process.env.APPWRITE_KEY as string);
   return {

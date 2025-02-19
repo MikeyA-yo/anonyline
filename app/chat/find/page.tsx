@@ -1,9 +1,13 @@
 import Find from "@/components/find";
+import { getSafeUser } from "@/components/getUser";
+import { redirect } from "next/navigation";
 
-export default function Page(){
+export default async function Page(){
+  const user = await getSafeUser();
+   if (!user) return redirect("/login");
     return (
         <>
-          <Find />
+          <Find user={user} />
         </>
     )
 }
