@@ -4,6 +4,7 @@ import useAPI from "./hooks/useapi";
 import { use, useEffect, useReducer, useState } from "react";
 import RoomForm from "./roomform";
 import { Models } from "node-appwrite";
+import Loading from "./loading";
 
 
 function resultReducer (state:any, action:any){
@@ -29,7 +30,6 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
   },[Rooms, Users])
   useEffect(()=>{
     dispatch({type:"result", value:[...result.room,...result.user]})
-    console.log(result.room, result.user)
   },[result.room, result.user])
   useEffect(()=>{
     if(input.length > 0){
@@ -61,13 +61,14 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
             }}
           />
         </div>
+        {loading && <Loading />}
         {isCreate && <RoomForm user={user} close={(b)=>{
           if (b){
             dispatch({type:"result", value:[...result.result, b]}) 
           }
           setIsCreate(false);
         }} />}
-        {result.result.length === 0 && <NotFound create={()=>{
+        {result.result.length === 0 && !loading && <NotFound create={()=>{
           setIsCreate(true);
         }} />}
       </div>
@@ -88,4 +89,23 @@ function NotFound({create}:{create: () => void}) {
       </p>
     </div>
   );
+}
+
+function RoomGrid({rooms}:{rooms:any[]}){
+  
+  return (
+    <></>
+  )
+}
+
+function RoomCard({name, description, image}:RoomCardProps){
+  return (
+    <></>
+  )
+}
+
+type RoomCardProps = {
+  name:string,
+  description:string,
+  image:string
 }

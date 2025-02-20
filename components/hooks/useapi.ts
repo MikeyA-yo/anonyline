@@ -18,8 +18,8 @@ const useAPI = (path:string, method?:method, body?:any) => {
                 }
                 const data = await res.json();
                 setRes(data);
-            } catch (error) {
-                setError(error);
+            } catch (error:any) {
+                setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -41,8 +41,8 @@ const useAPI = (path:string, method?:method, body?:any) => {
                 }
                 const data = await res.json();
                 setRes(data);
-            } catch (error) {
-                setError(error);
+            } catch (error:any) {
+                setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -61,8 +61,8 @@ const useAPI = (path:string, method?:method, body?:any) => {
                 }
                 const data = await res.json();
                 setRes(data);
-            } catch (error) {
-                setError(error);
+            } catch (error:any) {
+                setError(error.message);
             } finally {
                 setLoading(false);
             }
