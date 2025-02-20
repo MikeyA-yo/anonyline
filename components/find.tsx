@@ -71,6 +71,7 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
         {result.result.length === 0 && !loading && <NotFound create={()=>{
           setIsCreate(true);
         }} />}
+        {result.result.length > 0 && <RoomGrid rooms={result.result} />}
       </div>
     </>
   );
@@ -92,18 +93,30 @@ function NotFound({create}:{create: () => void}) {
 }
 
 function RoomGrid({rooms}:{rooms:any[]}){
-  
+  const {res, loading, run} = useAPI(`file/${rooms[0].name}`);
+  const [images, setImages] = useState<image[]>([]);
   return (
-    <></>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
+        {rooms.map((room:any, i)=>{
+          return <RoomCard name={room.name} description={room.description} image={room.image} key={i} />
+        })}
+      </div>
+    </>
   )
 }
 
 function RoomCard({name, description, image}:RoomCardProps){
   return (
-    <></>
+    <>
+      <div className="flex flex-col h-80"></div>
+    </>
   )
 }
-
+type image ={
+  id:string,
+  file: string,
+}
 type RoomCardProps = {
   name:string,
   description:string,
