@@ -113,7 +113,7 @@ function RoomGrid({rooms}:{rooms:any[]}){
       
      }
      
-     if (images.length !== rooms.length && res){
+     if (images.length < rooms.length && res){
        if (images.some(image=>image.id === rooms[images.length].name)){
          return;
        }
@@ -128,8 +128,9 @@ function RoomGrid({rooms}:{rooms:any[]}){
     }
   },[images]);
   useEffect(()=>{
-    if (cachImg.length > 0){
+    if (cachImg.length > 0 && cachImg.length === rooms.length){
       setImages(cachImg);
+      setReady(true)
     }
   }, [cachImg])
   return (
