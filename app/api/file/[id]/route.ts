@@ -10,7 +10,6 @@ export async function GET(
   const file = await storage.getFileView(process.env.PFP as string, fileId);
   let fileU8 = new Uint8Array(file);
   let fileArr = Array.from(fileU8);
-  console.log(file); 
   // Now you can use fileId in your logic
   return Response.json({ id: fileId, file: fileArr });
 }

@@ -95,11 +95,36 @@ function NotFound({create}:{create: () => void}) {
 function RoomGrid({rooms}:{rooms:any[]}){
   const {res, loading, run} = useAPI(`file/${rooms[0].name}`);
   const [images, setImages] = useState<image[]>([]);
+  const [ready, setReady] = useState(false);
+  useEffect(()=>{
+     if (res && res.file && !checkExistingImage(res.id, images)){
+      let uintArrFile = new Uint8Array(res.file);
+      let buffer = Buffer.from(uintArrFile);
+      let base64String = "data:image/png;base64,"+buffer.toString('base64');
+      // console.log(base64String)
+      setImages((prev)=>{
+        return [...prev, {id:res.id, file:base64String }];
+      });
+      
+     }
+     
+     if (images.length !== rooms.length){
+
+      run(`file/${rooms[images.length].name}`, "GET");
+      console.log("here ,",`file/${rooms[images.length].name}` )
+    }
+  },[res]);
+  useEffect(()=>{
+    if (images.length === rooms.length){
+      setReady(true)
+    }
+  },[images])
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
-        {rooms.map((room:any, i)=>{
-          return <RoomCard name={room.name} description={room.description} image={room.image} key={i} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-20">
+        {loading && <Loading />}
+        {!loading && ready && rooms.map((room:any, i)=>{
+          return <RoomCard name={room.name} description={room.description} image={findImage(room.name, images)} key={i} />
         })}
       </div>
     </>
@@ -109,13 +134,37 @@ function RoomGrid({rooms}:{rooms:any[]}){
 function RoomCard({name, description, image}:RoomCardProps){
   return (
     <>
-      <div className="flex flex-col h-80"></div>
+      <div className="flex flex-col lg:h-80 md:h-80 h-72 cursor-pointer">
+        <div className="w-full overflow-hidden h-full">
+          <img src={image} alt={name} className="h-full  transition-all duration-200 ease-in-out hover:scale-150 w-full object-cover rounded-lg" />
+        </div>
+        <div className="flex flex-col justify-center h-full w-full bg-[#2B2D31] rounded-lg p-5">
+          <h1 className="text-3xl font-bold text-[#EBD3F8]">{name}</h1>
+          <p className="text-[#a5a6a3]">{description}</p> 
+        </div>
+      </div>
     </>
   )
+}
+function checkExistingImage(id:string, images:image[]){
+  for (let i = 0; i < images.length; i++) {
+    if (images[i].id === id){
+      return true;
+    }
+  }
+  return false;
 }
 type image ={
   id:string,
   file: string,
+}
+function findImage(name:string, images:image[]){
+  for (let i = 0; i < images.length; i++) {
+    if (images[i].id === name){
+      return images[i].file;
+    }
+  }
+  return "";
 }
 type RoomCardProps = {
   name:string,
