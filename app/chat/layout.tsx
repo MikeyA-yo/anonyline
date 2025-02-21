@@ -15,7 +15,6 @@ export default  async function ChatLayout({
   const user = await getSafeUser();
    if (!user) return redirect("/login");
    const col = await rooms(user);
-   console.log(col)
   return (
     <main className="flex">
       <SideBar rooms={col} />

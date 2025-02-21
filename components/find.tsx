@@ -1,7 +1,7 @@
 "use client";
 import { FaSearch } from "react-icons/fa";
 import useAPI from "./hooks/useapi";
-import { use, useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import RoomForm from "./roomform";
 import { Models } from "node-appwrite";
 import Loading from "./loading";
@@ -95,21 +95,28 @@ function NotFound({create}:{create: () => void}) {
 function RoomGrid({rooms}:{rooms:any[]}){
   const {res, loading, run} = useAPI(`file/${rooms[0].name}`);
   const [images, setImages] = useState<image[]>([]);
+  const [cachImg, setCachImg] = useState<image[]>(JSON.parse(localStorage.getItem("images")||"[]"));
   const [ready, setReady] = useState(false);
   useEffect(()=>{
+    if (cachImg.length === rooms.length){
+      setImages(cachImg);
+      setReady(true);
+      return;
+    }
      if (res && res.file && !checkExistingImage(res.id, images)){
       let uintArrFile = new Uint8Array(res.file);
       let buffer = Buffer.from(uintArrFile);
       let base64String = "data:image/png;base64,"+buffer.toString('base64');
-      // console.log(base64String)
       setImages((prev)=>{
         return [...prev, {id:res.id, file:base64String }];
       });
       
      }
      
-     if (images.length !== rooms.length){
-
+     if (images.length !== rooms.length && res){
+       if (images.some(image=>image.id === rooms[images.length].name)){
+         return;
+       }
       run(`file/${rooms[images.length].name}`, "GET");
       console.log("here ,",`file/${rooms[images.length].name}` )
     }
@@ -117,8 +124,14 @@ function RoomGrid({rooms}:{rooms:any[]}){
   useEffect(()=>{
     if (images.length === rooms.length){
       setReady(true)
+      localStorage.setItem("images", JSON.stringify(images));
     }
-  },[images])
+  },[images]);
+  useEffect(()=>{
+    if (cachImg.length > 0){
+      setImages(cachImg);
+    }
+  }, [cachImg])
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-20">
