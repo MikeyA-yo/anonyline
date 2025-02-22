@@ -148,7 +148,9 @@ function RoomGrid({rooms}:{rooms:any[]}){
 function RoomCard({name, description, image}:RoomCardProps){
   return (
     <>
-      <div className="flex flex-col lg:h-80 md:h-80 h-72 cursor-pointer">
+      <div className="flex flex-col lg:h-80 md:h-80 h-72 cursor-pointer" onClick={()=>{
+        window.location.pathname = `/chat/${name}`
+      }}>
         <div className="w-full overflow-hidden h-full">
           <img src={image} alt={name} className="h-full  transition-all duration-200 ease-in-out hover:scale-150 w-full object-cover rounded-lg" />
         </div>
