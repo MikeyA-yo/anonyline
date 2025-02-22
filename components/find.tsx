@@ -5,13 +5,14 @@ import { useEffect, useReducer, useState } from "react";
 import RoomForm from "./roomform";
 import { Models } from "node-appwrite";
 import Loading from "./loading";
+import useRooms from "./hooks/userooms";
 
 
 function resultReducer (state:any, action:any){
   return {...state, [action.type]:action.value}
 }
 export default function Find({user}:{user:Models.User<Models.Preferences>}) {
-  const {res:Rooms, error, loading} = useAPI("rooms");
+  const {Rooms, error, loading} = useRooms();
   const {res:Users, error:e, loading:userLoad} = useAPI("users");
   const [isCreate, setIsCreate] = useState(false);
   const [input, setInput] = useState("");
@@ -63,9 +64,9 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
         </div>
         {loading && <Loading />}
         {isCreate && <RoomForm user={user} close={(b)=>{
-          if (b){
-            dispatch({type:"result", value:[...result.result, b]}) 
-          }
+          // if (b){
+          //   dispatch({type:"result", value:[...result.result, b]}) 
+          // }
           setIsCreate(false);
         }} />}
         {result.result.length === 0 && !loading && <NotFound create={()=>{
