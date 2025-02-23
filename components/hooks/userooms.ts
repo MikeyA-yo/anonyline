@@ -6,20 +6,19 @@ import { useEffect } from "react";
 
 const useRooms = ()=>{
     const {res:Rooms, error, loading, run} = useAPI("rooms");
-    console.log(process.env)
     useEffect(() => {
-        const channel = `databases.${databaseId}.collections.${roomId}.documents`;
-    
+        const channel = 'databases.*.collections.*.documents';
+        console.log(channel, "About to subscribe")
         const unsubscribe = client.subscribe(channel, (res) => {
             console.log(res)
-          if (res.payload) {
+          if (res) {
             run("rooms", "GET"); // Re-fetch rooms when data changes
           }
         });
     
-        return () => {
-          unsubscribe(); // Cleanup function to prevent memory leaks
-        };
+        // return () => {
+        //   unsubscribe(); // Cleanup function to prevent memory leaks
+        // };
       }, [Rooms]);
     return {Rooms, error, loading, run};
 }
