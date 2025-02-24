@@ -69,11 +69,13 @@ export default function RoomForm({close, user}:{close:(b?:any)=>void; user:Model
             let buffer = formField.profilePicture ? await formField.profilePicture.arrayBuffer() : null;
             let bufU8 = new Uint8Array(buffer as ArrayBuffer);
             let bufArr = Array.from(bufU8);
+            let image = "data:image/png;base64,"+buffer.toString("base64");
             run("rooms/create", "POST", {
               name: formField.roomName,
               description: formField.roomDescription,
               creator: user.$id,
-              pfp: bufArr
+              pfp: bufArr,
+              image
             })
            }
            create();

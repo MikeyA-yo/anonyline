@@ -38,7 +38,7 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
     }else if (input.length === 0){
       dispatch({type:"result", value:[...result.room, ...result.user]}) 
     }
-  }, [input, result.room, result.user]) // Add missing dependencies
+  }, [input, result.room, result.user])
   return (
     <>
       <div className="h-screen px-5 overflow-auto w-full bg-[#313338] flex flex-col items-center gap-4">
@@ -99,6 +99,17 @@ function RoomGrid({rooms}:{rooms:any[]}){
   const [cachImg, setCachImg] = useState<image[]>(JSON.parse(localStorage.getItem("images")||"[]"));
   const [ready, setReady] = useState(false);
   useEffect(()=>{
+    let lackingRooms = checkRoomImageDB(rooms);
+    if (lackingRooms.length > 0){
+      for (let i = 0; i < lackingRooms.length; i++){
+        run(`file/${lackingRooms[i].name}`, "GET");
+      }
+    } else{
+      setImages(extractImages(rooms));
+      setReady(true);
+    }
+  },[rooms])
+  useEffect(()=>{
     if (cachImg.length === rooms.length){
       setImages(cachImg);
       setReady(true);
@@ -111,21 +122,14 @@ function RoomGrid({rooms}:{rooms:any[]}){
       setImages((prev)=>{
         return [...prev, {id:res.id, file:base64String }];
       });
-      
+      run(`rooms/update`, "PUT", {name:res.id, update:{image:base64String}})
      }
      
-     if (images.length < rooms.length && res){
-       if (images.some(image=>image.id === rooms[images.length].name)){
-         return;
-       }
-      run(`file/${rooms[images.length].name}`, "GET");
-      console.log("here ,",`file/${rooms[images.length].name}` )
-    }
   },[res]);
   useEffect(()=>{
     if (images.length === rooms.length){
       setReady(true)
-      localStorage.setItem("images", JSON.stringify(images));
+      //localStorage.setItem("images", JSON.stringify(images));
     }
   },[images]);
   useEffect(()=>{
@@ -182,6 +186,23 @@ function findImage(name:string, images:image[]){
     }
   }
   return "";
+}
+// function to check which rooms don't have the image field of base64 encoding, and returns an array of those lacking
+function checkRoomImageDB(rooms:any[]){
+  let lacking = [];
+   for (let i = 0; i < rooms.length; i++){
+      if (!rooms[i]?.image){
+        lacking.push(rooms[i]);
+      }
+   }
+   return lacking;
+}
+function extractImages (rooms:any[]){
+  let images = [];
+  for (let i = 0; i < rooms.length; i++){
+    images.push({id:rooms[i].name, file:rooms[i].image});
+  }
+  return images
 }
 type RoomCardProps = {
   name:string,
