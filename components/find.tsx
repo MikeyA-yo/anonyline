@@ -140,7 +140,7 @@ function RoomGrid({rooms}:{rooms:any[]}){
   }, [cachImg])
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-24">
         {loading && <Loading />}
         {!loading && ready && rooms.map((room:any, i)=>{
           return <RoomCard name={room.name} description={room.description} image={findImage(room.name, images)} key={i} />
