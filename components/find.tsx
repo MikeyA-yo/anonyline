@@ -96,48 +96,52 @@ function NotFound({create}:{create: () => void}) {
 function RoomGrid({rooms}:{rooms:any[]}){
   const {res, loading, run} = useAPI(`file/${rooms[0].name}`);
   const [images, setImages] = useState<image[]>([]);
-  const [cachImg, setCachImg] = useState<image[]>(JSON.parse(localStorage.getItem("images")||"[]"));
   const [ready, setReady] = useState(false);
-  useEffect(()=>{
-    let lackingRooms = checkRoomImageDB(rooms);
-    if (lackingRooms.length > 0){
-      for (let i = 0; i < lackingRooms.length; i++){
-        run(`file/${lackingRooms[i].name}`, "GET");
-      }
-    } else{
-      setImages(extractImages(rooms));
-      setReady(true);
-    }
-  },[rooms])
-  useEffect(()=>{
-    if (cachImg.length === rooms.length){
-      setImages(cachImg);
-      setReady(true);
-      return;
-    }
-     if (res && res.file && !checkExistingImage(res.id, images)){
-      let uintArrFile = new Uint8Array(res.file);
-      let buffer = Buffer.from(uintArrFile);
-      let base64String = "data:image/png;base64,"+buffer.toString('base64');
-      setImages((prev)=>{
-        return [...prev, {id:res.id, file:base64String }];
+  useEffect(() => {
+    // Check which rooms need images
+    const lackingRooms = checkRoomImageDB(rooms);
+    
+    if (lackingRooms.length > 0) {
+      // Fetch images for rooms that don't have them
+      lackingRooms.forEach(room => {
+        run(`file/${room.name}`, "GET");
       });
-      run(`rooms/update`, "PUT", {name:res.id, update:{image:base64String}})
-     }
-     
-  },[res]);
-  useEffect(()=>{
-    if (images.length === rooms.length){
-      setReady(true)
-      //localStorage.setItem("images", JSON.stringify(images));
+    } else {
+      // All rooms have images, extract and set them
+      const extractedImages = extractImages(rooms);
+      // Only set images if they have valid data
+      if (extractedImages.every(img => img.file)) {
+        setImages(extractedImages);
+        setReady(true);
+      }
     }
-  },[images]);
-  useEffect(()=>{
-    if (cachImg.length > 0 && cachImg.length === rooms.length){
-      setImages(cachImg);
-      setReady(true)
+  }, [rooms]);
+
+  useEffect(() => {
+    // Process new image data when received
+    if (res?.file && !checkExistingImage(res.id, images)) {
+      const uintArrFile = new Uint8Array(res.file);
+      const buffer = Buffer.from(uintArrFile);
+      const base64String = "data:image/png;base64," + buffer.toString('base64');
+      
+      if (base64String) {
+        setImages(prev => [...prev, { id: res.id, file: base64String }]);
+        
+        // Update room with new image
+        run(`rooms/update`, "PUT", {
+          name: res.id,
+          update: { image: base64String }
+        });
+      }
     }
-  }, [cachImg])
+  }, [res]);
+
+  useEffect(() => {
+    // Mark as ready when all images are loaded and valid
+    if (images.length === rooms.length && images.every(img => img.file)) {
+      setReady(true);
+    }
+  }, [images, rooms]);
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-24">
