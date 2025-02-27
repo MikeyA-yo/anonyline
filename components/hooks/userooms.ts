@@ -16,7 +16,6 @@ const useRooms = () => {
     if (!effectRef.current) {
       effectRef.current = true;
       const channel = `databases.${databaseId}.collections.${roomId}.documents`;
-      console.log(channel, "About to subscribe");
       unsubscribe = client.subscribe([channel], (res) => {
         console.log(res);
         if (res) {
