@@ -1,4 +1,4 @@
-import { createSessionDB, createSessionStorage } from "@/app/appwrite_config/appwrite-server-config";
+import { createSessionDB, createSessionStorage, createSessionUsers } from "@/app/appwrite_config/appwrite-server-config";
 import { revalidatePath } from "next/cache";
 import { Models, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
@@ -38,7 +38,10 @@ export async function listUsers(){
     const {database} = await  createSessionDB();
     return database.listDocuments(process.env.DATABASE_ID as string, process.env.USERS as string);   
 }
-
+export async function createUser(user:string){
+    const {database} = await  createSessionDB();
+    return database.createDocument(process.env.DATABASE_ID as string, process.env.USERS as string, user, {user})
+}
 interface room {
     name:string;
     description?:string;

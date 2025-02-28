@@ -7,6 +7,7 @@ import { Models } from "node-appwrite";
 import Loading from "./loading";
 import useRooms from "./hooks/userooms";
 import useUsers from "./hooks/useusers";
+import { desc } from "motion/react-client";
 
 
 function resultReducer (state:any, action:any){
@@ -27,11 +28,11 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
       dispatch({type:"room", value:Rooms.documents});
     }
     if(Users){
-      dispatch({type:"user", value:Users.documents})
+      dispatch({type:"user", value:formatUser(Users.documents)})
     }
   },[Rooms, Users])
   useEffect(()=>{
-    dispatch({type:"result", value:[...result.room,...result.user]})
+    dispatch({type:"result", value:[...result.room], ...result.user})
   },[result.room, result.user])
   useEffect(()=>{
     if(input.length > 0){
@@ -65,9 +66,6 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
         </div>
         {loading && <Loading />}
         {isCreate && <RoomForm user={user} close={(b)=>{
-          // if (b){
-          //   dispatch({type:"result", value:[...result.result, b]}) 
-          // }
           setIsCreate(false);
         }} />}
         {result.result.length === 0 && !loading && <NotFound create={()=>{
@@ -148,7 +146,8 @@ function RoomGrid({rooms}:{rooms:any[]}){
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-24">
         {loading && <Loading />}
         {!loading && ready && rooms.map((room:any, i)=>{
-          return <RoomCard name={room.name} description={room.description} image={findImage(room.name, images)} key={i} />
+          let image = findImage(room.name, images)
+          if (image.length > 0)  return <RoomCard name={room.name} description={room.description} image={image} key={i} />
         })}
       </div>
     </>
@@ -208,6 +207,13 @@ function extractImages (rooms:any[]){
     images.push({id:rooms[i].name, file:rooms[i].image});
   }
   return images
+}
+function formatUser(user:any[]){
+  let users = [];
+  for (let i = 0; i < user.length; i++){
+    users.push({name:"user", image:"/anonymous-1.png", id:user[i].$id, description:"An anonymous user" });
+  }
+  return users
 }
 type RoomCardProps = {
   name:string,
