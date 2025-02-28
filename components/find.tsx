@@ -211,7 +211,7 @@ function extractImages (rooms:any[]){
 function formatUser(user:any[]){
   let users = [];
   for (let i = 0; i < user.length; i++){
-    users.push({name:"user", image:"/anonymous-1.png", id:user[i].$id, description:"An anonymous user" });
+    users.push({name:"user", image:"/anonymous-1.png", $id:user[i].$id, description:"An anonymous user" });
   }
   return users
 }
