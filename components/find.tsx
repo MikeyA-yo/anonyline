@@ -6,6 +6,7 @@ import RoomForm from "./roomform";
 import { Models } from "node-appwrite";
 import Loading from "./loading";
 import useRooms from "./hooks/userooms";
+import useUsers from "./hooks/useusers";
 
 
 function resultReducer (state:any, action:any){
@@ -13,7 +14,7 @@ function resultReducer (state:any, action:any){
 }
 export default function Find({user}:{user:Models.User<Models.Preferences>}) {
   const {Rooms, error, loading} = useRooms();
-  const {res:Users, error:e, loading:userLoad} = useAPI("users");
+  const {Users, error:e, loading:userLoad} = useUsers();
   const [isCreate, setIsCreate] = useState(false);
   const [input, setInput] = useState("");
   const [result, dispatch] = useReducer(resultReducer, {
