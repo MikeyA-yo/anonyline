@@ -6,8 +6,6 @@ import RoomForm from "./roomform";
 import { Models } from "node-appwrite";
 import Loading from "./loading";
 import useRooms from "./hooks/userooms";
-import useUsers from "./hooks/useusers";
-import { desc } from "motion/react-client";
 
 
 function resultReducer (state:any, action:any){
@@ -15,32 +13,27 @@ function resultReducer (state:any, action:any){
 }
 export default function Find({user}:{user:Models.User<Models.Preferences>}) {
   const {Rooms, error, loading} = useRooms();
-  const {Users, error:e, loading:userLoad} = useUsers();
   const [isCreate, setIsCreate] = useState(false);
   const [input, setInput] = useState("");
   const [result, dispatch] = useReducer(resultReducer, {
     result:[],
     room:[],
-    user:[]
   })
   useEffect(()=>{
     if(Rooms){
       dispatch({type:"room", value:Rooms.documents});
     }
-    if(Users){
-      dispatch({type:"user", value:formatUser(Users.documents)})
-    }
-  },[Rooms, Users])
+  },[Rooms])
   useEffect(()=>{
-    dispatch({type:"result", value:[...result.room], ...result.user})
-  },[result.room, result.user])
+    dispatch({type:"result", value:[...result.room]})
+  },[result.room])
   useEffect(()=>{
     if(input.length > 0){
-      dispatch({type:"result", value:[...result.room, ...result.user].filter((room:any)=>room.$id.toLowerCase().includes(input.toLowerCase()))})
+      dispatch({type:"result", value:[...result.room].filter((room:any)=>room.$id.toLowerCase().includes(input.toLowerCase()))})
     }else if (input.length === 0){
-      dispatch({type:"result", value:[...result.room, ...result.user]}) 
+      dispatch({type:"result", value:[...result.room]}) 
     }
-  }, [input, result.room, result.user])
+  }, [input, result.room])
   return (
     <>
       <div className="h-screen px-5 overflow-auto w-full bg-[#313338] flex flex-col items-center gap-4">
@@ -189,7 +182,7 @@ function findImage(name:string, images:image[]){
       return images[i].file;
     }
   }
-  return "";
+  return "/anonymous-1.png";
 }
 // function to check which rooms don't have the image field of base64 encoding, and returns an array of those lacking
 function checkRoomImageDB(rooms:any[]){
@@ -207,13 +200,6 @@ function extractImages (rooms:any[]){
     images.push({id:rooms[i].name, file:rooms[i].image});
   }
   return images
-}
-function formatUser(user:any[]){
-  let users = [];
-  for (let i = 0; i < user.length; i++){
-    users.push({name:"user", image:"/anonymous-1.png", $id:user[i].$id, description:"An anonymous user" });
-  }
-  return users
 }
 type RoomCardProps = {
   name:string,
