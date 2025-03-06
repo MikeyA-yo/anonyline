@@ -11,29 +11,39 @@ import useRooms from "./hooks/userooms";
 function resultReducer (state:any, action:any){
   return {...state, [action.type]:action.value}
 }
-export default function Find({user}:{user:Models.User<Models.Preferences>}) {
-  const {Rooms, error, loading} = useRooms();
+interface Room extends Models.Document {
+  $id: string;
+  name: string;
+  description: string;
+  image?: string;
+}
+
+export default function Find({user, rooms}:{user:Models.User<Models.Preferences>, rooms: Models.Document[]}) {
   const [isCreate, setIsCreate] = useState(false);
   const [input, setInput] = useState("");
   const [result, dispatch] = useReducer(resultReducer, {
-    result:[],
-    room:[],
-  })
-  useEffect(()=>{
-    if(Rooms){
-      dispatch({type:"room", value:Rooms.documents});
+    result: rooms,
+    room: rooms,
+  });
+  const {Rooms} = useRooms();
+
+  useEffect(() => {
+    if (input.length > 0) {
+      dispatch({
+        type: "result",
+        value: [...rooms].filter((room: any) => 
+          room.$id.toLowerCase().includes(input.toLowerCase())
+        )
+      })
+    } else {
+      dispatch({type: "result", value: [...rooms]})
     }
-  },[Rooms])
+  }, [input, rooms])
   useEffect(()=>{
-    dispatch({type:"result", value:[...result.room]})
-  },[result.room])
-  useEffect(()=>{
-    if(input.length > 0){
-      dispatch({type:"result", value:[...result.room].filter((room:any)=>room.$id.toLowerCase().includes(input.toLowerCase()))})
-    }else if (input.length === 0){
-      dispatch({type:"result", value:[...result.room]}) 
+    if (Rooms &&  Rooms.length != rooms.length ) {
+      dispatch({type: "result", value: [...Rooms]})
     }
-  }, [input, result.room])
+  }, [Rooms])
   return (
     <>
       <div className="h-screen px-5 overflow-auto w-full bg-[#313338] flex flex-col items-center gap-4">
@@ -57,11 +67,10 @@ export default function Find({user}:{user:Models.User<Models.Preferences>}) {
             }}
           />
         </div>
-        {loading && <Loading />}
         {isCreate && <RoomForm user={user} close={(b)=>{
           setIsCreate(false);
         }} />}
-        {result.result.length === 0 && !loading && <NotFound create={()=>{
+        {result.result.length === 0 && <NotFound create={()=>{
           setIsCreate(true);
         }} />}
         {result.result.length > 0 && <RoomGrid rooms={result.result} />}

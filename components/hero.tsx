@@ -65,6 +65,9 @@ export default function Hero() {
                 delay:0
               }
             }}
+            onClick={()=>{
+              window.location.pathname = "/login"
+            }}
             className="bg-[#AD49E1] text-[#EBD3F8] hover:scale-75 px-4 py-2 rounded-lg"
           >
             Get Started
