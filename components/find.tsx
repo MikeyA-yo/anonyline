@@ -40,8 +40,8 @@ export default function Find({user, rooms}:{user:Models.User<Models.Preferences>
     }
   }, [input, rooms])
   useEffect(()=>{
-    if (Rooms &&  Rooms.length != rooms.length ) {
-      dispatch({type: "result", value: [...Rooms]})
+    if (Rooms &&  Rooms.documents.length != rooms.length ) {
+      dispatch({type: "result", value: [...Rooms.documents]})
     }
   }, [Rooms])
   return (
