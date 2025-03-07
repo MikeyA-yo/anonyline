@@ -20,7 +20,7 @@ function CMenu({ rooms }: { rooms: Models.Document[] }) {
   return (
     <>
       {/* Private Individual Menu */}
-      <Link href={"/chat/"} className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-500 ease-linear  hover:rounded-md my-4  h-12 w-12 flex items-center justify-center">
+      <Link href={"/chat/"} className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-500 ease-linear  hover:rounded-md my-4  h-10 w-10 flex items-center justify-center">
         <FaUser />
       </Link>
       {/* Room menu */}
@@ -29,14 +29,14 @@ function CMenu({ rooms }: { rooms: Models.Document[] }) {
           <Link 
             href={`/chat/${v.$id}`}
             key={i}
-            className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-75 ease-in-out  hover:rounded-md h-12 w-12 flex items-center justify-center"
+            className="bg-[#7A1CAC] p-1 rounded-full transition-all duration-75 ease-in-out  hover:rounded-md h-10 w-10 flex items-center justify-center"
           >
             {!v.image && <FaUserGroup />}
             {v.image && <img src={v.image} alt={v.name} className="h-full w-full rounded-full hover:rounded-md" />}
           </Link>
         ))}
         {/* Menu for creating a room */}
-        <Link href={`/chat/find`} className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-500 ease-linear  hover:rounded-md cursor-pointer my-4  h-12 w-12 flex items-center justify-center">
+        <Link href={`/chat/find`} className="bg-[#7A1CAC] p-1 rounded-full transition-all duration-500 ease-linear  hover:rounded-md cursor-pointer my-4  h-10 w-10 flex items-center justify-center">
           <FaPlusCircle />
         </Link>
       </div>
@@ -47,9 +47,9 @@ function CMenu({ rooms }: { rooms: Models.Document[] }) {
 export default function ChatMenu({ rooms }: { rooms: Models.Document[] }) {
   return (
     <>
-      <div className="lg:block md:block h-full overflow-auto hidden">
+      {/* <div className="lg:block md:block h-full overflow-x-hidden hidden"> */}
         <CMenu rooms={rooms} />
-      </div>
+      {/* </div> */}
     </>
   );
 }
@@ -85,7 +85,7 @@ export function ChatMenuMobile({ rooms }: { rooms: Models.Document[] }) {
               type: "spring",
               bounce: 0.3,
             }}
-            className="fixed h-full bg-[#2E073F] p-2 z-10"
+            className="sticky h-full bg-[#2E073F] p-2 z-10"
           >
             <div className="flex py-10 flex-col items-center h-full">
               <CMenu rooms={rooms} />
