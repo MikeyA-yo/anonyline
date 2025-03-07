@@ -6,8 +6,6 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { AnimateDiv } from "./nav";
 import { PiSpinnerLight } from "react-icons/pi";
 import { CreateAcct, CreateLogin } from "./login-actions";
-import { useClientSession } from "./use-session";
-import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [loginTxt, setLoginTx] = useState("Login to Your Account");
