@@ -1,58 +1,60 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiMenu, BiX } from "react-icons/bi";
 import { FaPlusCircle, FaUser } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import { AnimateDiv } from "./nav";
 import { AnimatePresence } from "motion/react";
 import useRooms from "./hooks/userooms";
+import { Models } from "appwrite";
 
-function CMenu({ roomsId }: { roomsId: string[] }) {
+function CMenu({ rooms }: { rooms: Models.Document[] }) {
   const {Rooms, error, loading} = useRooms();
+  const [roomList, setRoomList] = useState(rooms);
+  useEffect(()=>{
+    if (Rooms && Rooms.documents.length != roomList){
+      setRoomList([...Rooms.documents])
+    }
+  }, [Rooms])
   return (
     <>
       {/* Private Individual Menu */}
-      <div className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-500 ease-linear  hover:rounded-md my-4  h-12 w-12 flex items-center justify-center">
-        <Link href={"/chat/"}>
-          <FaUser />
-        </Link>
-      </div>
+      <Link href={"/chat/"} className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-500 ease-linear  hover:rounded-md my-4  h-12 w-12 flex items-center justify-center">
+        <FaUser />
+      </Link>
       {/* Room menu */}
       <div className="flex flex-col gap-4">
-        {roomsId.map((v, i) => (
-          <div
+        {roomList.map((v, i) => (
+          <Link 
+            href={`/chat/${v.$id}`}
             key={i}
             className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-75 ease-in-out  hover:rounded-md h-12 w-12 flex items-center justify-center"
           >
-            <Link href={`/chat/${v}`}>
-              <FaUserGroup />
-            </Link>
-          </div>
+            {!v.image && <FaUserGroup />}
+            {v.image && <img src={v.image} alt={v.name} className="h-full w-full rounded-full hover:rounded-md" />}
+          </Link>
         ))}
         {/* Menu for creating a room */}
-        <div className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-500 ease-linear  hover:rounded-md cursor-pointer my-4  h-12 w-12 flex items-center justify-center">
-          <Link href={`/chat/find`}>
-            {" "}
-            <FaPlusCircle />
-          </Link>
-        </div>
+        <Link href={`/chat/find`} className="bg-[#7A1CAC] p-2 rounded-full transition-all duration-500 ease-linear  hover:rounded-md cursor-pointer my-4  h-12 w-12 flex items-center justify-center">
+          <FaPlusCircle />
+        </Link>
       </div>
     </>
   );
 }
 
-export default function ChatMenu({ roomsId }: { roomsId: string[] }) {
+export default function ChatMenu({ rooms }: { rooms: Models.Document[] }) {
   return (
     <>
       <div className="lg:block md:block h-full overflow-auto hidden">
-        <CMenu roomsId={roomsId} />
+        <CMenu rooms={rooms} />
       </div>
     </>
   );
 }
 
-export function ChatMenuMobile({ roomsId }: { roomsId: string[] }) {
+export function ChatMenuMobile({ rooms }: { rooms: Models.Document[] }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -86,7 +88,7 @@ export function ChatMenuMobile({ roomsId }: { roomsId: string[] }) {
             className="fixed h-full bg-[#2E073F] p-2 z-10"
           >
             <div className="flex py-10 flex-col items-center h-full">
-              <CMenu roomsId={roomsId} />
+              <CMenu rooms={rooms} />
             </div>
           </AnimateDiv>
         )}

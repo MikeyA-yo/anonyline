@@ -6,10 +6,10 @@ export default async function SideBar({rooms}:{rooms:Models.DocumentList<Models.
     return (
         <>
           <nav className="fixed lg:block h-screen md:block hidden overflow-auto p-5 bg-[#2E073F]">
-            <ChatMenu roomsId={rooms.documents.map( v => v.$id)} />
+            <ChatMenu rooms={rooms.documents} />
           </nav>
           <div className="lg:hidden md:hidden block">
-            <ChatMenuMobile roomsId={rooms.documents.map( v => v.$id)} />
+            <ChatMenuMobile rooms={rooms.documents} />
           </div>
         </>
     )
