@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   _:NextRequest,
-  { params }: { params: { id: string } }
+  params: Promise<{ id: string }>
 ) {
   const fileId = (await params).id;
   const {storage} = await createSessionStorage();
