@@ -1,9 +1,13 @@
 import Login from "@/components/login";
 import { Metadata } from "next";
+import { redirect } from "next/navigation"
+import { getSafeUser } from "@/components/getUser"
 export const metadata:Metadata = {
     title: "Login"
 }
-export default function Page(){
+export default async function Page(){
+    const user = await getSafeUser();
+    if (!user) return redirect("/login");
     return (
         <>
          <Login />

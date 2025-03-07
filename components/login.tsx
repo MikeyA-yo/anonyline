@@ -11,8 +11,6 @@ import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [loginTxt, setLoginTx] = useState("Login to Your Account");
-  const user = useClientSession();
-  const router = useRouter()
   const [mode, setMode] = useState("login");
   const [inState, inDp] = useReducer(reducer, {
     email: "",
@@ -21,11 +19,6 @@ export default function Login() {
   const [showPw, setShowPw] = useState(false);
   const [fState, lAction, fL] = useActionState(CreateLogin, undefined)
   const [sfState, sAction, sL] = useActionState(CreateAcct, undefined) 
-  useEffect(()=>{
-    if (user?.$id){
-      router.push("/chat");
-    }
-  }, [user])
   useEffect(()=>{
     if (sfState?.success){
       setMode("login")
