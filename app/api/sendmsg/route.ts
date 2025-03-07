@@ -10,7 +10,7 @@ const transport = createTransport({
   },
 });
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   const { name, email, phone, message } = await req.json();
   const mailOpts: Mail.Options = {
     from: process.env.GMAIL,
@@ -32,6 +32,6 @@ export async function POST(req: Request, res: Response) {
     await sendMailPromise();
     return NextResponse.json({ message: "Email sent" });
   } catch (e) {
-    return NextResponse.json({ message: "Email not sent" });
+    if (e instanceof Error) return NextResponse.json({ message: `Email not sent ${e.message}` });
   }
 }

@@ -7,16 +7,17 @@ import { Models } from "node-appwrite";
 import Loading from "./loading";
 import useRooms from "./hooks/userooms";
 
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function resultReducer (state:any, action:any){
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return {...state, [action.type]:action.value}
 }
-interface Room extends Models.Document {
-  $id: string;
-  name: string;
-  description: string;
-  image?: string;
-}
+// interface Room extends Models.Document {
+//   $id: string;
+//   name: string;
+//   description: string;
+//   image?: string;
+// }
 
 export default function Find({user, rooms}:{user:Models.User<Models.Preferences>, rooms: Models.Document[]}) {
   const [isCreate, setIsCreate] = useState(false);
@@ -31,7 +32,7 @@ export default function Find({user, rooms}:{user:Models.User<Models.Preferences>
     if (input.length > 0) {
       dispatch({
         type: "result",
-        value: [...rooms].filter((room: any) => 
+        value: [...rooms].filter((room: Models.Document) => 
           room.$id.toLowerCase().includes(input.toLowerCase())
         )
       })
@@ -43,7 +44,7 @@ export default function Find({user, rooms}:{user:Models.User<Models.Preferences>
     if (Rooms &&  Rooms.documents.length != rooms.length ) {
       dispatch({type: "result", value: [...Rooms.documents]})
     }
-  }, [Rooms])
+  }, [Rooms, rooms.length])
   return (
     <>
       <div className="h-screen px-5 overflow-auto w-full bg-[#313338] flex flex-col items-center gap-4">
@@ -67,7 +68,7 @@ export default function Find({user, rooms}:{user:Models.User<Models.Preferences>
             }}
           />
         </div>
-        {isCreate && <RoomForm user={user} close={(b)=>{
+        {isCreate && <RoomForm user={user} close={()=>{
           setIsCreate(false);
         }} />}
         {result.result.length === 0 && <NotFound create={()=>{
@@ -94,7 +95,7 @@ function NotFound({create}:{create: () => void}) {
   );
 }
 
-function RoomGrid({rooms}:{rooms:any[]}){
+function RoomGrid({rooms}:{rooms:Models.Document[]}){
   const {res, loading, run} = useAPI(`file/${rooms[0].name}`);
   const [images, setImages] = useState<image[]>([]);
   const [ready, setReady] = useState(false);
@@ -145,10 +146,10 @@ function RoomGrid({rooms}:{rooms:any[]}){
   }, [images, rooms]);
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-24">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-12">
         {loading && <Loading />}
-        {!loading && ready && rooms.map((room:any, i)=>{
-          let image = findImage(room.name, images)
+        {!loading && ready && rooms.map((room:Models.Document, i)=>{
+          const image = findImage(room.name, images)
           if (image.length > 0)  return <RoomCard name={room.name} description={room.description} image={image} key={i} />
         })}
       </div>
@@ -159,14 +160,14 @@ function RoomGrid({rooms}:{rooms:any[]}){
 function RoomCard({name, description, image}:RoomCardProps){
   return (
     <>
-      <div className="flex flex-col lg:h-80 md:h-80 h-72 cursor-pointer" onClick={()=>{
+      <div className="flex flex-col lg:h-80 md:h-80 h-72 min-w-fit w-[16rem] cursor-pointer" onClick={()=>{
         window.location.pathname = `/chat/${name}`
       }}>
         <div className="w-full overflow-hidden h-full">
           <img src={image} alt={name} className="h-full  transition-all duration-200 ease-in-out hover:scale-150 w-full object-cover rounded-lg" />
         </div>
         <div className="flex flex-col justify-center h-full w-full bg-[#2B2D31] rounded-lg p-5">
-          <h1 className="text-3xl font-bold text-[#EBD3F8]">{name}</h1>
+          <h1 className="lg:text-2xl text-xl font-bold text-[#EBD3F8]">{name}</h1>
           <p className="text-[#a5a6a3]">{description}</p> 
         </div>
       </div>
@@ -194,8 +195,8 @@ function findImage(name:string, images:image[]){
   return "/anonymous-1.png";
 }
 // function to check which rooms don't have the image field of base64 encoding, and returns an array of those lacking
-function checkRoomImageDB(rooms:any[]){
-  let lacking = [];
+function checkRoomImageDB(rooms:Models.Document[]){
+  const lacking = [];
    for (let i = 0; i < rooms.length; i++){
       if (!rooms[i]?.image){
         lacking.push(rooms[i]);
@@ -203,8 +204,8 @@ function checkRoomImageDB(rooms:any[]){
    }
    return lacking;
 }
-function extractImages (rooms:any[]){
-  let images = [];
+function extractImages (rooms:Models.Document[]){
+  const images = [];
   for (let i = 0; i < rooms.length; i++){
     images.push({id:rooms[i].name, file:rooms[i].image});
   }

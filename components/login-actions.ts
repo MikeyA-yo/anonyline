@@ -6,7 +6,7 @@ import { loginSChema } from "./zconf";
 
 import { cookies } from "next/headers";
 import { ID } from "node-appwrite";
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function CreateLogin(formState: any, formData: FormData) {
   const pwd = formData.get("password")?.toString();
   const em = formData.get("email")?.toString();
@@ -32,7 +32,7 @@ export async function CreateLogin(formState: any, formData: FormData) {
     return redirect("/chat");
   }
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function CreateAcct(formState: any, formData: FormData) {
   try {const pwd = formData.get("password")?.toString();
     const em = formData.get("email")?.toString();
@@ -52,10 +52,11 @@ export async function CreateAcct(formState: any, formData: FormData) {
       return {
           success: "Successful, now login"
       }
-    }} catch (e:any){
-        return {
+    }} catch (e){
+      if (e instanceof Error)
+        {return {
             errors: e.message
-        }
+        }}
     }
 }
 

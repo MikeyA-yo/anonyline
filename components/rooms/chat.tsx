@@ -1,6 +1,7 @@
+import { Models } from "node-appwrite";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 
-export default function RoomChat() {
+export default function RoomChat({room}:{room:Models.Document}) {
   return (
     <div className="flex h-screen w-full">
       {/* Info Panel - Similar to Discord's right panel */}
@@ -10,10 +11,10 @@ export default function RoomChat() {
             <div className="w-16 h-16 rounded-full bg-[#7A1CAC] flex items-center justify-center">
               <span className="text-2xl">🎭</span>
             </div>
-            <h2 className="text-xl font-bold text-[#EBD3F8]">Room Name</h2>
+            <h2 className="text-xl font-bold text-[#EBD3F8]">{room.name}</h2>
           </div>
           <p className="text-[#a5a6a3] text-sm mb-6">
-            This is a description of the room. Users can see what this room is about.
+            {room.description}
           </p>
           
           {/* Room Vote Section */}

@@ -1,12 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-
-const useAPI = (path:string, method?:method, body?:any) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const useAPI = (path:string, method?:method) => {
   if (!method) method = "GET";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [res, setRes] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const run = useCallback((path:string, method:method, body?:any)=>{
     if (method === "GET"){
         async function get(){
@@ -18,8 +21,8 @@ const useAPI = (path:string, method?:method, body?:any) => {
                 }
                 const data = await res.json();
                 setRes(data);
-            } catch (error:any) {
-                setError(error.message);
+            } catch (error) {
+               if (error instanceof Error) setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -41,8 +44,8 @@ const useAPI = (path:string, method?:method, body?:any) => {
                 }
                 const data = await res.json();
                 setRes(data);
-            } catch (error:any) {
-                setError(error.message);
+            } catch (error) {
+               if (error instanceof Error) setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -61,8 +64,8 @@ const useAPI = (path:string, method?:method, body?:any) => {
                 }
                 const data = await res.json();
                 setRes(data);
-            } catch (error:any) {
-                setError(error.message);
+            } catch (error) {
+               if (error instanceof Error) setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -71,7 +74,7 @@ const useAPI = (path:string, method?:method, body?:any) => {
     } else if (method === "POST" || method === "DELETE" || method === "PUT"){
         setRes(`You can't use this method: ${method} on initial hook initialization, use the run function`)
     }
-  },[])
+  },[method, path])
   return { res, loading, error, run };
 }
 export default useAPI;

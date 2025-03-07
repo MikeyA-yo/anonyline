@@ -10,13 +10,13 @@ import useRooms from "./hooks/userooms";
 import { Models } from "appwrite";
 
 function CMenu({ rooms }: { rooms: Models.Document[] }) {
-  const {Rooms, error, loading} = useRooms();
+  const {Rooms} = useRooms();
   const [roomList, setRoomList] = useState(rooms);
   useEffect(()=>{
     if (Rooms && Rooms.documents.length != roomList){
       setRoomList([...Rooms.documents])
     }
-  }, [Rooms])
+  }, [Rooms, roomList])
   return (
     <>
       {/* Private Individual Menu */}

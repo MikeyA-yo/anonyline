@@ -1,7 +1,7 @@
 import { updateRoom } from "@/components/db";
 import { NextRequest } from "next/server";
 
-export async function PUT(req:NextRequest, res:Response){
+export async function PUT(req:NextRequest){
   const {name, update} = await req.json();
   try {
     if (!name || !update){
@@ -9,7 +9,9 @@ export async function PUT(req:NextRequest, res:Response){
     }
     const result = await updateRoom(name, update);
     return Response.json(result);
-  }catch (e:any){
-    return new Response(e.message as string, {status:500});
+  }catch (e){
+    if ( e instanceof Error){
+      return new Response(e.message as string, {status:500});
+    }
   }
 }

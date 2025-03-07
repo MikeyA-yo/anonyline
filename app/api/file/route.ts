@@ -1,9 +1,6 @@
 import { createSessionStorage } from "@/app/appwrite_config/appwrite-server-config";
-import { NextRequest } from "next/server";
 
-export async function GET(
-  request: NextRequest,
-) {
+export async function GET() {
   const {storage} = await createSessionStorage();
   const file = await storage.listFiles(process.env.PFP as string);
 //   let fileU8 = new Uint8Array(file);

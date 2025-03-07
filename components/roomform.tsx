@@ -7,7 +7,7 @@ import { Models } from "appwrite";
 import useAPI from "./hooks/useapi";
 import { PiSpinnerLight } from "react-icons/pi";
 
-export default function RoomForm({close, user}:{close:(b?:any)=>void; user:Models.User<Models.Preferences>}) {
+export default function RoomForm({close, user}:{close:()=>void; user:Models.User<Models.Preferences>}) {
   const {res:Room, error, loading, run} = useAPI("rooms/create", "POST");
   const [e, setE] = useState(false);
   const [etxt, setETxt] = useState("");
@@ -25,7 +25,7 @@ export default function RoomForm({close, user}:{close:(b?:any)=>void; user:Model
     }
     if (Room && typeof Room !== "string"){
       setE(false);
-      close(Room);
+      close();
     }
   },[Room, error])
   return (
@@ -66,10 +66,10 @@ export default function RoomForm({close, user}:{close:(b?:any)=>void; user:Model
                setETxt("Room Name is required");
             }
            async function create(){
-            let buffer = formField.profilePicture ? await formField.profilePicture.arrayBuffer() : null;
-            let bufU8 = new Uint8Array(buffer as ArrayBuffer);
-            let bufArr = Array.from(bufU8);
-            let image = "data:image/png;base64,"+Buffer.from(bufU8).toString("base64");
+            const buffer = formField.profilePicture ? await formField.profilePicture.arrayBuffer() : null;
+            const bufU8 = new Uint8Array(buffer as ArrayBuffer);
+            const bufArr = Array.from(bufU8);
+            const image = "data:image/png;base64,"+Buffer.from(bufU8).toString("base64");
             run("rooms/create", "POST", {
               name: formField.roomName,
               description: formField.roomDescription,
@@ -86,7 +86,7 @@ export default function RoomForm({close, user}:{close:(b?:any)=>void; user:Model
     </Dialog>
   );
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function formReducer (state:any, action:any){
   return {...state, [action.type]: action.value}
 }

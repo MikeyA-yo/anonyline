@@ -51,7 +51,7 @@ export default function Login() {
             <div>
               {mode === "login" ? (
                 <p>
-                  Don't have an account ?{" "}
+                  Don&apos;t have an account ?{" "}
                   <span
                     className="underline cursor-pointer text-[#2E073F]"
                     onClick={() => {
