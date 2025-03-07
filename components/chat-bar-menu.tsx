@@ -16,7 +16,7 @@ function CMenu({ rooms }: { rooms: Models.Document[] }) {
     if (Rooms && Rooms.documents.length != roomList){
       setRoomList([...Rooms.documents])
     }
-  }, [Rooms, roomList])
+  }, [Rooms, roomList.length])
   return (
     <>
       {/* Private Individual Menu */}

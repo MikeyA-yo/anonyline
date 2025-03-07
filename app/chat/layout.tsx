@@ -13,7 +13,7 @@ export default async function ChatLayout({
   children: React.ReactNode;
 }>) {
   const user = await getSafeUser();
-  if (!user) return redirect("/login");
+  if (!user?.$id) return redirect("/login");
   const col = await rooms(user);
   return (
     <main className="flex">
