@@ -7,7 +7,7 @@ export const metadata:Metadata = {
 }
 export default async function Page(){
     const user = await getSafeUser();
-    if (!user) return redirect("/login");
+    if (!user) return redirect("/chat");
     return (
         <>
          <Login />
