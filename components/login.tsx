@@ -6,6 +6,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { AnimateDiv } from "./nav";
 import { PiSpinnerLight } from "react-icons/pi";
 import { CreateAcct, CreateLogin } from "./login-actions";
+import { useClientSession } from "./use-session";
 
 export default function Login() {
   const [loginTxt, setLoginTx] = useState("Login to Your Account");
@@ -16,7 +17,13 @@ export default function Login() {
   });
   const [showPw, setShowPw] = useState(false);
   const [fState, lAction, fL] = useActionState(CreateLogin, undefined)
-  const [sfState, sAction, sL] = useActionState(CreateAcct, undefined) 
+  const [sfState, sAction, sL] = useActionState(CreateAcct, undefined);
+  const user = useClientSession();
+  useEffect(()=>{
+    if (user){
+      window.location.href = "/chat"
+    }
+  },[user]) 
   useEffect(()=>{
     if (sfState?.success){
       setMode("login")

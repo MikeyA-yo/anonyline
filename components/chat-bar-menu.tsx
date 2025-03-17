@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BiMenu, BiX } from "react-icons/bi";
 import { FaPlusCircle, FaUser } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
@@ -8,15 +8,30 @@ import { AnimateDiv } from "./nav";
 import { AnimatePresence } from "motion/react";
 import useRooms from "./hooks/userooms";
 import { Models } from "appwrite";
+import { useClientSession } from "./use-session";
 
 function CMenu({ rooms }: { rooms: Models.Document[] }) {
   const {Rooms} = useRooms();
   const [roomList, setRoomList] = useState(rooms);
+  const user = useClientSession();
   useEffect(()=>{
     if (Rooms && Rooms.documents.length != roomList){
       setRoomList([...Rooms.documents])
     }
   }, [Rooms, roomList.length])
+  
+  const isInitialMount = useRef(true);
+  useEffect(() => {
+    // Skip initial mount effect
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    if (!user){
+      window.location.href = "/login"
+    }
+  }, [user]);
   return (
     <>
       {/* Private Individual Menu */}

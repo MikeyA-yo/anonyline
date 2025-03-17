@@ -1,5 +1,5 @@
 import SideBar from "@/components/chat-sidebar";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import { getSafeUser } from "@/components/getUser";
 import { rooms } from "@/components/db";
 import { Metadata } from "next";
@@ -14,7 +14,7 @@ export default async function ChatLayout({
 }>) {
   const user = await getSafeUser();
   console.log(user)
-  if (!user?.$id) return redirect("/login");
+  if (!user?.$id) return null;
   const col = await rooms(user);
   return (
     <main className="flex">
