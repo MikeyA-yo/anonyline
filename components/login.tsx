@@ -35,7 +35,7 @@ export default function Login() {
         </div>
         <div className="flex flex-col items-center justify-center p-5 text-[#EBD3F8]">
           <div className="flex flex-col p-5 rounded bg-[#7A1CAC] gap-6">
-            {fState?.errors && <Msg type="e" msg={`Error occured ${fState.errors.email ? "Email invalid": fState.errors.password?"Password invalid":"Unknown, likely network" }`} />}
+            {fState?.errors && <Msg type="e" msg={`Error occured ${typeof fState.errors === 'string' ? fState.errors : fState.errors.email?.[0] ? "Email invalid" : fState.errors.password?.[0] ? "Password invalid" : "Unknown, likely network"}`} />}
             {sfState?.errors && <Msg type="e" msg={`Error occured ${typeof sfState.errors === 'string' ? sfState.errors : sfState.errors.email?.[0] ?? sfState.errors.password?.[0] ?? 'Unknown error'}`} />}
             {sfState?.success && <Msg type="s" msg={`${sfState.success}`} />}
             <h2 className="text-3xl font-semibold">{loginTxt}</h2>

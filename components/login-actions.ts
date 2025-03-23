@@ -2,8 +2,6 @@
 
 import { createUser, loginUser } from "./user";
 import { loginSChema } from "./zconf";
-
-// import { cookies } from "next/headers";
 import { ID } from "node-appwrite";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function CreateLogin(formState: any, formData: FormData) {
@@ -42,7 +40,7 @@ export async function CreateAcct(formState: any, formData: FormData) {
     const res = await createUser(email, password, name);
     if (res){
       return {
-          success: "Successful, now login"
+          success: "Successful check your email: " + email + " for verification, if you don't see it check spam folder"
       }
     }} catch (e){
       if (e instanceof Error)

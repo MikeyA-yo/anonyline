@@ -13,12 +13,10 @@ export default async function ChatLayout({
   children: React.ReactNode;
 }>) {
   const user = await getSafeUser();
-  console.log(user)
-  if (!user?.$id) return redirect("/login");
-  const col = await rooms(user);
+    if (!user?.data.session?.user) redirect("/login")
   return (
     <main className="flex">
-      <SideBar rooms={col} />
+      <SideBar rooms={[]} />
       {children}
     </main>
   );

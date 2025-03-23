@@ -7,9 +7,9 @@ import { FaUserGroup } from "react-icons/fa6";
 import { AnimateDiv } from "./nav";
 import { AnimatePresence } from "motion/react";
 import useRooms from "./hooks/userooms";
-import { Models } from "appwrite";
+import { Room } from "./types/room";
 
-function CMenu({ rooms }: { rooms: Models.Document[] }) {
+function CMenu({ rooms }: { rooms: Room[] }) {
   const {Rooms} = useRooms();
   const [roomList, setRoomList] = useState(rooms);
   useEffect(()=>{
@@ -27,7 +27,7 @@ function CMenu({ rooms }: { rooms: Models.Document[] }) {
       <div className="flex flex-col gap-4">
         {roomList.map((v, i) => (
           <Link 
-            href={`/chat/${v.$id}`}
+            href={`/chat/${v.id}`}
             key={i}
             className="bg-[#7A1CAC] p-1 rounded-full transition-all duration-75 ease-in-out  hover:rounded-md h-10 w-10 flex items-center justify-center"
           >
@@ -44,7 +44,7 @@ function CMenu({ rooms }: { rooms: Models.Document[] }) {
   );
 }
 
-export default function ChatMenu({ rooms }: { rooms: Models.Document[] }) {
+export default function ChatMenu({ rooms }: { rooms: Room[] }) {
   return (
     <>
       {/* <div className="lg:block md:block h-full overflow-x-hidden hidden"> */}
@@ -54,7 +54,7 @@ export default function ChatMenu({ rooms }: { rooms: Models.Document[] }) {
   );
 }
 
-export function ChatMenuMobile({ rooms }: { rooms: Models.Document[] }) {
+export function ChatMenuMobile({ rooms }: { rooms: Room[] }) {
   const [open, setOpen] = useState(false);
   return (
     <>
