@@ -25,18 +25,23 @@ export default function Find({user, rooms}:{user:User, rooms: Room[]}) {
     if (input.length > 0) {
       dispatch({
         type: "result",
-        value: [...rooms].filter((room: Room) => 
+        value: [...result.room].filter((room: Room) => 
           room.name.toLowerCase().includes(input.toLowerCase())
         )
       })
     } else {
-      dispatch({type: "result", value: [...rooms]})
+      
+    if (result.room.length !== result.result.length){
+      dispatch({type: "result", value: [...result.room]})
     }
-  }, [input, rooms])
+    }
+  }, [input, rooms, result.room])
   useEffect(()=>{
     if (Rooms &&  Rooms.length != rooms.length ) {
       dispatch({type: "room", value: [...Rooms]})
-      dispatch({type:"result", value:[...Rooms]})
+      if (input.length > 0){
+        dispatch({type:"result", value:[...Rooms]})
+      }
     }
   }, [Rooms, rooms.length])
   return (
