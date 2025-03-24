@@ -14,7 +14,6 @@ export async function createRoom(name:string, description:string, owner:string, 
   if (error) return error;
   revalidatePath("/chat");
   return data[0];
-//   return {error};
 }
 export async function updateRoom(name:string, update:room){
     

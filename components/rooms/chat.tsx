@@ -5,11 +5,11 @@ export default function RoomChat({room}:{room:Room}) {
   return (
     <div className="flex h-screen w-full">
       {/* Info Panel - Similar to Discord's right panel */}
-      <div className="w-80 bg-[#2B2D31] flex flex-col">
+      <div className="w-80 bg-[#2B2D31]  lg:flex md:flex hidden flex-col">
         <div className="p-4 border-b border-[#1E1F22]">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 rounded-full bg-[#7A1CAC] flex items-center justify-center">
-              <span className="text-2xl">🎭</span>
+            <div className="w-16 h-16 rounded-full bg-[#7A1CAC] flex items-center overflow-hidden justify-center">
+              {room.image ?<img src={room.image} alt={room.name} className="w-full h-full hover:scale-125" /> :<span className="text-xl m-2">🎭</span>}
             </div>
             <h2 className="text-xl font-bold text-[#EBD3F8]">{room.name}</h2>
           </div>
@@ -43,7 +43,7 @@ export default function RoomChat({room}:{room:Room}) {
               <div className="w-24 h-24 rounded-full bg-[#7A1CAC] flex items-center justify-center">
                 <span className="text-4xl">💭</span>
               </div>
-              <h1 className="text-2xl font-bold text-[#EBD3F8]">Welcome to the Room!</h1>
+              <h1 className="text-2xl font-bold text-[#EBD3F8]">Welcome to {room.name}</h1>
               <p className="text-[#a5a6a3] text-center">
                 This is the beginning of the conversation.
                 Keep it friendly and respectful!

@@ -12,6 +12,7 @@ import { Room } from "./types/room";
 function CMenu({ rooms }: { rooms: Room[] }) {
   const {Rooms} = useRooms();
   const [roomList, setRoomList] = useState(rooms);
+  console.log(roomList)
   useEffect(()=>{
     if (Rooms && Rooms.length != roomList){
       setRoomList([...Rooms])
