@@ -13,8 +13,8 @@ function CMenu({ rooms }: { rooms: Room[] }) {
   const {Rooms} = useRooms();
   const [roomList, setRoomList] = useState(rooms);
   useEffect(()=>{
-    if (Rooms && Rooms.documents.length != roomList){
-      setRoomList([...Rooms.documents])
+    if (Rooms && Rooms.length != roomList){
+      setRoomList([...Rooms])
     }
   }, [Rooms, roomList.length])
   return (
