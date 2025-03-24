@@ -27,7 +27,7 @@ function CMenu({ rooms }: { rooms: Room[] }) {
       <div className="flex flex-col gap-4">
         {roomList.map((v, i) => (
           <Link 
-            href={`/chat/${v.id}`}
+            href={`/chat/${v.name}`}
             key={i}
             className="bg-[#7A1CAC] p-1 rounded-full transition-all duration-75 ease-in-out  hover:rounded-md h-10 w-10 flex items-center justify-center"
           >

@@ -35,7 +35,8 @@ export default function Find({user, rooms}:{user:User, rooms: Room[]}) {
   }, [input, rooms])
   useEffect(()=>{
     if (Rooms &&  Rooms.length != rooms.length ) {
-      dispatch({type: "result", value: [...Rooms]})
+      dispatch({type: "room", value: [...Rooms]})
+      dispatch({type:"result", value:[...Rooms]})
     }
   }, [Rooms, rooms.length])
   return (

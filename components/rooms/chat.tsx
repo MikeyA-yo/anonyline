@@ -1,7 +1,7 @@
-import { Models } from "node-appwrite";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
+import { Room } from "../types/room";
 
-export default function RoomChat({room}:{room:Models.Document}) {
+export default function RoomChat({room}:{room:Room}) {
   return (
     <div className="flex h-screen w-full">
       {/* Info Panel - Similar to Discord's right panel */}

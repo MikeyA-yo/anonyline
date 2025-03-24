@@ -7,7 +7,7 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const  room = await getRoom(id);
+  const  room = await getRoom(decodeURIComponent(id));
   return (
     <>
       <RoomChat room={room} />
