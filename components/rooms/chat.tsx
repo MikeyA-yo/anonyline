@@ -5,10 +5,69 @@ import { useState } from "react";
 
 import useAPI from "../hooks/useapi";
 import { User } from "@supabase/supabase-js";
+import { useRoom } from "../hooks/userooms";
 
-export default function RoomChat({ room, user }: { room: Room, user: User }) {
+export default function RoomChat({ room: initialRoom, user }: { room: Room; user: User }) {
   const [showInfo, setShowInfo] = useState(false);
   const { run } = useAPI("rooms/update", "POST");
+  const { Room, loading } = useRoom(initialRoom.name);
+  
+  // Use Room from hook if available, otherwise use initial room
+  const room = (!loading && Room) ? Room[0] : initialRoom;
+
+  // Check if user has voted
+  const hasVotedStay = room.members?.includes(user?.id);
+  const hasVotedGo = room.enemies?.includes(user?.id);
+
+  const handleStayVote = () => {
+    const existingMembers:string[] = room.members || [];
+    const existingEnemies:string[] = room.enemies || [];
+    
+    if (!existingMembers.includes(user?.id)) {
+      // Remove from enemies if present
+      const updatedEnemies = existingEnemies.filter(id => id !== user?.id);
+      
+      run("rooms/update", "PUT", {
+        name: room.name,
+        update: {
+          stay_votes: hasVotedGo ? room.stay_votes + 1 : room.stay_votes + 1,
+          go_votes: hasVotedGo ? room.go_votes - 1 : room.go_votes,
+          members: [...existingMembers, user?.id],
+          enemies: updatedEnemies,
+        },
+      });
+    }
+  };
+
+  const handleGoVote = () => {
+    const existingEnemies:string[] = room.enemies || [];
+    const existingMembers:string[] = room.members || [];
+    
+    if (!existingEnemies.includes(user?.id)) {
+      // Remove from members if present
+      const updatedMembers = existingMembers.filter(id => id !== user?.id);
+      
+      run("rooms/update", "PUT", {
+        name: room.name,
+        update: {
+          go_votes: hasVotedStay ? room.go_votes + 1 : room.go_votes + 1,
+          stay_votes: hasVotedStay ? room.stay_votes - 1 : room.stay_votes,
+          enemies: [...existingEnemies, user?.id],
+          members: updatedMembers,
+        },
+      });
+    }
+  };
+
+  // Update the button classes to include active state
+  const stayButtonClass = `flex-1 flex items-center justify-center gap-2 ${
+    hasVotedStay ? 'bg-[#7A1CAC]' : 'bg-[#404249]'
+  } hover:bg-[#7A1CAC] transition-colors px-4 py-2 rounded-lg`;
+
+  const goButtonClass = `flex-1 flex items-center justify-center gap-2 ${
+    hasVotedGo ? 'bg-[#7A1CAC]' : 'bg-[#404249]'
+  } hover:bg-[#7A1CAC] transition-colors px-4 py-2 rounded-lg`;
+
   return (
     <div className="flex h-screen w-full relative">
       {/* Mobile Info Panel Overlay */}
@@ -44,39 +103,22 @@ export default function RoomChat({ room, user }: { room: Room, user: User }) {
               Should this room stay?
             </p>
             <div className="flex gap-4">
-              <button
-                onClick={() => {
-                  const existingMembers = room.members || [];
-                  if (!existingMembers.includes(user?.id)) {
-                    existingMembers.push(user?.id);
-                  }
-                  run("rooms/update", "PUT", {
-                    name: room.name,
-                    update: {
-                      stay_votes: room.stay_votes + 1,
-                      members: existingMembers
-                    },
-                  });
-                }}
-                className="flex-1 flex items-center justify-center gap-2 bg-[#404249] hover:bg-[#7A1CAC] transition-colors px-4 py-2 rounded-lg"
-              >
-                <FaThumbsUp className="text-[#EBD3F8]" />
-                <span className="text-[#EBD3F8]">Yes</span>
-                <p>{room.stay_votes}</p>
-              </button>
-              <button
-                onClick={() => {
-                  run("rooms/update", "PUT", {
-                    name: room.name,
-                    update: {go_votes:room.go_votes + 1},
-                  });
-                }}
-                className="flex-1 flex items-center justify-center gap-2 bg-[#404249] hover:bg-[#7A1CAC] transition-colors px-4 py-2 rounded-lg"
-              >
-                <FaThumbsDown className="text-[#EBD3F8]" />
-                <span className="text-[#EBD3F8]">No</span>
-                <p>{room.go_votes}</p>
-              </button>
+            <button
+    onClick={handleStayVote}
+    className={stayButtonClass}
+  >
+    <FaThumbsUp className="text-[#EBD3F8]" />
+    <span className="text-[#EBD3F8]">Yes</span>
+    <p>{room.stay_votes}</p>
+  </button>
+  <button
+    onClick={handleGoVote}
+    className={goButtonClass}
+  >
+    <FaThumbsDown className="text-[#EBD3F8]" />
+    <span className="text-[#EBD3F8]">No</span>
+    <p>{room.go_votes}</p>
+  </button>
             </div>
           </div>
         </div>
@@ -107,14 +149,22 @@ export default function RoomChat({ room, user }: { room: Room, user: User }) {
               Should this room stay?
             </p>
             <div className="flex gap-4">
-              <button className="flex items-center gap-2 bg-[#404249] hover:bg-[#7A1CAC] transition-colors px-4 py-2 rounded-lg">
-                <FaThumbsUp className="text-[#EBD3F8]" />
-                <span className="text-[#EBD3F8]">Yes</span>
-              </button>
-              <button className="flex items-center gap-2 bg-[#404249] hover:bg-[#7A1CAC] transition-colors px-4 py-2 rounded-lg">
-                <FaThumbsDown className="text-[#EBD3F8]" />
-                <span className="text-[#EBD3F8]">No</span>
-              </button>
+            <button
+    onClick={handleStayVote}
+    className={stayButtonClass}
+  >
+    <FaThumbsUp className="text-[#EBD3F8]" />
+    <span className="text-[#EBD3F8]">Yes</span>
+    <p>{room.stay_votes}</p>
+  </button>
+  <button
+    onClick={handleGoVote}
+    className={goButtonClass}
+  >
+    <FaThumbsDown className="text-[#EBD3F8]" />
+    <span className="text-[#EBD3F8]">No</span>
+    <p>{room.go_votes}</p>
+  </button>
             </div>
           </div>
         </div>

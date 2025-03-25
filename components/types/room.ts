@@ -9,4 +9,5 @@ export interface Room{
   go_votes:number;
   isStaying:boolean;
   members:string[];
+  enemies:string[];
 }
