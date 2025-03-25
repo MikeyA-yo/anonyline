@@ -5,4 +5,8 @@ export interface Room{
   image:string;
   name:string;
   description:string;
+  stay_votes:number;
+  go_votes:number;
+  isStaying:boolean;
+  members:string[];
 }

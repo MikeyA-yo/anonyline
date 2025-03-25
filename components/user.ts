@@ -1,7 +1,5 @@
 "use server"
 
-// import { createSessionClient, createUserClient } from "@/app/appwrite_config/appwrite-server-config";
-// import { ID } from "@/app/appwrite_config/appwriteConfig";
 import { createClient } from '@/app/supabase_config/server';
 
 export async function createUser( email:string, password:string, name?:string){

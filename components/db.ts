@@ -16,7 +16,11 @@ export async function createRoom(name:string, description:string, owner:string, 
   return data[0];
 }
 export async function updateRoom(name:string, update:room){
-    
+    const supabase = await createClient();
+    const {error, data} = await supabase.from("rooms").update(update).eq("name", name).select();
+    if (error) return error;
+    revalidatePath("/chat");
+    return data[0];
 }
 export async function listRooms(){
     const supabase = await createClient();
