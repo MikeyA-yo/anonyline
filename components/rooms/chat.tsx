@@ -12,10 +12,8 @@ export default function RoomChat({ room: initialRoom, user }: { room: Room; user
   const { run } = useAPI("rooms/update", "POST");
   const { Room, loading } = useRoom(initialRoom.name);
   
-  // Use Room from hook if available, otherwise use initial room
-  const room = (!loading && Room) ? Room[0] : initialRoom;
+  const room:typeof initialRoom = (!loading && Room) ? Room[0] : initialRoom;
 
-  // Check if user has voted
   const hasVotedStay = room.members?.includes(user?.id);
   const hasVotedGo = room.enemies?.includes(user?.id);
 

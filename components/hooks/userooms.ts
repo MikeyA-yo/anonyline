@@ -19,7 +19,7 @@ const useRoom = (name:string) => {
     const supabase = createClient();
     useEffect(() => {
      supabase.channel("room").on("postgres_changes", { event: "*", schema: "public", table: "rooms" }, (payload) => {
-      run("rooms", "GET");
+      run(`rooms?room=${name}`, "GET");
      }).subscribe();
       
   }, []);
