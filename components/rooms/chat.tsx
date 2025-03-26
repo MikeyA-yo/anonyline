@@ -6,25 +6,32 @@ import { useState } from "react";
 import useAPI from "../hooks/useapi";
 import { User } from "@supabase/supabase-js";
 import { useRoom } from "../hooks/userooms";
+import ChatContainer from "./chat-container";
 
-export default function RoomChat({ room: initialRoom, user }: { room: Room; user: User }) {
+export default function RoomChat({
+  room: initialRoom,
+  user,
+}: {
+  room: Room;
+  user: User;
+}) {
   const [showInfo, setShowInfo] = useState(false);
   const { run } = useAPI("rooms/update", "POST");
   const { Room, loading } = useRoom(initialRoom.name);
-  
-  const room:typeof initialRoom = (!loading && Room) ? Room[0] : initialRoom;
+
+  const room: typeof initialRoom = !loading && Room && Room.length >= 1 ? Room[0] : initialRoom;
 
   const hasVotedStay = room.members?.includes(user?.id);
   const hasVotedGo = room.enemies?.includes(user?.id);
 
   const handleStayVote = () => {
-    const existingMembers:string[] = room.members || [];
-    const existingEnemies:string[] = room.enemies || [];
-    
+    const existingMembers: string[] = room.members || [];
+    const existingEnemies: string[] = room.enemies || [];
+
     if (!existingMembers.includes(user?.id)) {
       // Remove from enemies if present
-      const updatedEnemies = existingEnemies.filter(id => id !== user?.id);
-      
+      const updatedEnemies = existingEnemies.filter((id) => id !== user?.id);
+
       run("rooms/update", "PUT", {
         name: room.name,
         update: {
@@ -38,13 +45,13 @@ export default function RoomChat({ room: initialRoom, user }: { room: Room; user
   };
 
   const handleGoVote = () => {
-    const existingEnemies:string[] = room.enemies || [];
-    const existingMembers:string[] = room.members || [];
-    
+    const existingEnemies: string[] = room.enemies || [];
+    const existingMembers: string[] = room.members || [];
+
     if (!existingEnemies.includes(user?.id)) {
       // Remove from members if present
-      const updatedMembers = existingMembers.filter(id => id !== user?.id);
-      
+      const updatedMembers = existingMembers.filter((id) => id !== user?.id);
+
       run("rooms/update", "PUT", {
         name: room.name,
         update: {
@@ -59,11 +66,11 @@ export default function RoomChat({ room: initialRoom, user }: { room: Room; user
 
   // Update the button classes to include active state
   const stayButtonClass = `flex-1 flex items-center justify-center gap-2 ${
-    hasVotedStay ? 'bg-[#7A1CAC]' : 'bg-[#404249]'
+    hasVotedStay ? "bg-[#7A1CAC]" : "bg-[#404249]"
   } hover:bg-[#7A1CAC] transition-colors px-4 py-2 rounded-lg`;
 
   const goButtonClass = `flex-1 flex items-center justify-center gap-2 ${
-    hasVotedGo ? 'bg-[#7A1CAC]' : 'bg-[#404249]'
+    hasVotedGo ? "bg-[#7A1CAC]" : "bg-[#404249]"
   } hover:bg-[#7A1CAC] transition-colors px-4 py-2 rounded-lg`;
 
   return (
@@ -101,22 +108,16 @@ export default function RoomChat({ room: initialRoom, user }: { room: Room; user
               Should this room stay?
             </p>
             <div className="flex gap-4">
-            <button
-    onClick={handleStayVote}
-    className={stayButtonClass}
-  >
-    <FaThumbsUp className="text-[#EBD3F8]" />
-    <span className="text-[#EBD3F8]">Yes</span>
-    <p>{room.stay_votes}</p>
-  </button>
-  <button
-    onClick={handleGoVote}
-    className={goButtonClass}
-  >
-    <FaThumbsDown className="text-[#EBD3F8]" />
-    <span className="text-[#EBD3F8]">No</span>
-    <p>{room.go_votes}</p>
-  </button>
+              <button onClick={handleStayVote} className={stayButtonClass}>
+                <FaThumbsUp className="text-[#EBD3F8]" />
+                <span className="text-[#EBD3F8]">Yes</span>
+                <p>{room.stay_votes}</p>
+              </button>
+              <button onClick={handleGoVote} className={goButtonClass}>
+                <FaThumbsDown className="text-[#EBD3F8]" />
+                <span className="text-[#EBD3F8]">No</span>
+                <p>{room.go_votes}</p>
+              </button>
             </div>
           </div>
         </div>
@@ -147,22 +148,16 @@ export default function RoomChat({ room: initialRoom, user }: { room: Room; user
               Should this room stay?
             </p>
             <div className="flex gap-4">
-            <button
-    onClick={handleStayVote}
-    className={stayButtonClass}
-  >
-    <FaThumbsUp className="text-[#EBD3F8]" />
-    <span className="text-[#EBD3F8]">Yes</span>
-    <p>{room.stay_votes}</p>
-  </button>
-  <button
-    onClick={handleGoVote}
-    className={goButtonClass}
-  >
-    <FaThumbsDown className="text-[#EBD3F8]" />
-    <span className="text-[#EBD3F8]">No</span>
-    <p>{room.go_votes}</p>
-  </button>
+              <button onClick={handleStayVote} className={stayButtonClass}>
+                <FaThumbsUp className="text-[#EBD3F8]" />
+                <span className="text-[#EBD3F8]">Yes</span>
+                <p>{room.stay_votes}</p>
+              </button>
+              <button onClick={handleGoVote} className={goButtonClass}>
+                <FaThumbsDown className="text-[#EBD3F8]" />
+                <span className="text-[#EBD3F8]">No</span>
+                <p>{room.go_votes}</p>
+              </button>
             </div>
           </div>
         </div>
@@ -195,22 +190,7 @@ export default function RoomChat({ room: initialRoom, user }: { room: Room; user
             </div>
           </div>
         </div>
-
-        {/* Message Input Area */}
-        <div className="bg-[#2B2D31] p-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex gap-4">
-              <input
-                type="text"
-                placeholder="Send a message..."
-                className="flex-1 bg-[#383A40] text-[#EBD3F8] rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#7A1CAC]"
-              />
-              <button className="bg-[#7A1CAC] text-[#EBD3F8] px-6 py-2 rounded-md hover:bg-[#6A189C] transition-colors">
-                Send
-              </button>
-            </div>
-          </div>
-        </div>
+         <ChatContainer />
       </div>
     </div>
   );

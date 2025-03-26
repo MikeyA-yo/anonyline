@@ -5,45 +5,45 @@ import RoomForm from "./roomform";
 import useRooms from "./hooks/userooms";
 import { User } from "@supabase/supabase-js";
 import { Room } from "./types/room";
+import { useRouter } from "next/navigation";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function resultReducer (state:any, action:any){
+function resultReducer(state: any, action: any) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return {...state, [action.type]:action.value}
+  return { ...state, [action.type]: action.value };
 }
 
-export default function Find({user, rooms}:{user:User, rooms: Room[]}) {
+export default function Find({ user, rooms }: { user: User; rooms: Room[] }) {
   const [isCreate, setIsCreate] = useState(false);
   const [input, setInput] = useState("");
   const [result, dispatch] = useReducer(resultReducer, {
     result: rooms,
     room: rooms,
   });
-  const {Rooms} = useRooms();
+  const { Rooms } = useRooms();
 
   useEffect(() => {
     if (input.length > 0) {
       dispatch({
         type: "result",
-        value: [...result.room].filter((room: Room) => 
+        value: [...result.room].filter((room: Room) =>
           room.name.toLowerCase().includes(input.toLowerCase())
-        )
-      })
+        ),
+      });
     } else {
-      
-    if (result.room.length !== result.result.length){
-      dispatch({type: "result", value: [...result.room]})
-    }
-    }
-  }, [input, rooms, result.room])
-  useEffect(()=>{
-    if (Rooms &&  Rooms.length != rooms.length ) {
-      dispatch({type: "room", value: [...Rooms]})
-      if (input.length > 0){
-        dispatch({type:"result", value:[...Rooms]})
+      if (result.room.length !== result.result.length) {
+        dispatch({ type: "result", value: [...result.room] });
       }
     }
-  }, [Rooms, rooms.length])
+  }, [input, rooms, result.room]);
+  useEffect(() => {
+    if (Rooms && Rooms.length != rooms.length) {
+      dispatch({ type: "room", value: [...Rooms] });
+      if (input.length > 0) {
+        dispatch({ type: "result", value: [...Rooms] });
+      }
+    }
+  }, [Rooms, rooms.length]);
   return (
     <>
       <div className="h-screen px-5 overflow-auto w-full bg-[#313338] flex flex-col items-center gap-4">
@@ -62,70 +62,99 @@ export default function Find({user, rooms}:{user:User, rooms: Room[]}) {
             className="bg-[#2B2D31] text-[#EBD3F8] rounded-full w-full p-4"
             type="text"
             placeholder="Search for a chat, enter a room code"
-            onChange={(e)=>{
+            onChange={(e) => {
               setInput(e.target.value);
             }}
           />
         </div>
-        {isCreate && <RoomForm user={user} close={()=>{
-          setIsCreate(false);
-        }} />}
-        {result.result.length === 0 && <NotFound create={()=>{
-          setIsCreate(true);
-        }} />}
+        {isCreate && (
+          <RoomForm
+            user={user}
+            close={() => {
+              setIsCreate(false);
+            }}
+          />
+        )}
+        {result.result.length === 0 && (
+          <NotFound
+            create={() => {
+              setIsCreate(true);
+            }}
+          />
+        )}
         {result.result.length > 0 && <RoomGrid rooms={result.result} />}
       </div>
     </>
   );
 }
 
-function NotFound({create}:{create: () => void}) {
+function NotFound({ create }: { create: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-2xl font-bold text-[#EBD3F8]">
-        No results found
-      </h1>
-      <p className="text-[#a5a6a3] text-center">  
-        Try searching for something else or <span className="cursor-pointer underline" onClick={()=>{
-          create();
-        }}>Create a new room</span>
+      <h1 className="text-2xl font-bold text-[#EBD3F8]">No results found</h1>
+      <p className="text-[#a5a6a3] text-center">
+        Try searching for something else or{" "}
+        <span
+          className="cursor-pointer underline"
+          onClick={() => {
+            create();
+          }}
+        >
+          Create a new room
+        </span>
       </p>
     </div>
   );
 }
 
-function RoomGrid({rooms}:{rooms:Room[]}){
+function RoomGrid({ rooms }: { rooms: Room[] }) {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-12">
-       
-        {rooms.map((room:Room, i)=>{
-           return <RoomCard name={room.name} description={room.description} image={room.image} key={i} />
+        {rooms.map((room: Room, i) => {
+          return (
+            <RoomCard
+              name={room.name}
+              description={room.description}
+              image={room.image}
+              key={i}
+            />
+          );
         })}
       </div>
     </>
-  )
+  );
 }
 
-function RoomCard({name, description, image}:RoomCardProps){
+function RoomCard({ name, description, image }: RoomCardProps) {
+  const rtr = useRouter();
   return (
     <>
-      <div className="flex flex-col lg:h-80 md:h-80 h-72 min-w-fit w-[16rem] cursor-pointer" onClick={()=>{
-        window.location.pathname = `/chat/${name}`
-      }}>
+      <div
+        className="flex flex-col lg:h-80 md:h-80 h-72 min-w-fit w-[16rem] cursor-pointer"
+        onClick={() => {
+          rtr.push(`/chat/${name}`);
+        }}
+      >
         <div className="w-full overflow-hidden h-full">
-          <img src={image ? image : "/anonymous-1.png"} alt={name} className="h-full  transition-all duration-200 ease-in-out hover:scale-150 w-full object-cover rounded-lg" />
+          <img
+            src={image ? image : "/anonymous-1.png"}
+            alt={name}
+            className="h-full  transition-all duration-200 ease-in-out hover:scale-150 w-full object-cover rounded-lg"
+          />
         </div>
         <div className="flex flex-col justify-center h-full w-full bg-[#2B2D31] rounded-lg p-5">
-          <h1 className="lg:text-2xl text-xl font-bold text-[#EBD3F8]">{name}</h1>
-          <p className="text-[#a5a6a3]">{description}</p> 
+          <h1 className="lg:text-2xl text-xl font-bold text-[#EBD3F8]">
+            {name}
+          </h1>
+          <p className="text-[#a5a6a3]">{description}</p>
         </div>
       </div>
     </>
-  )
+  );
 }
 type RoomCardProps = {
-  name:string,
-  description:string,
-  image:string
-}
+  name: string;
+  description: string;
+  image: string;
+};

@@ -1,9 +1,12 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from '@/app/supabase_config/server';
 import { User } from "@supabase/supabase-js";
-export async function rooms (user:User) {
+export async function rooms(user: User) {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("rooms").select().eq("owner", user.id);
+  const { data, error } = await supabase
+    .from("rooms")
+    .select()
+    .or(`owner.eq.${user.id}, members.cs.{"${user.id}"}`);
   if (error) return [];
   return data;
 }
