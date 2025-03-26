@@ -18,7 +18,7 @@ export default async function ChatLayout({
   const room = await rooms(user.data.session.user)
   return (
     <main className="flex">
-      <SideBar rooms={room} />
+      <SideBar rooms={room} user={user.data.session.user}/>
       {children}
     </main>
   );

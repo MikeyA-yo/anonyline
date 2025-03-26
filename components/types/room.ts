@@ -1,7 +1,7 @@
 export interface Room{
   id: number;
   created_at: string;
-  owner:number;
+  owner:string;
   image:string;
   name:string;
   description:string;

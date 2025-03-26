@@ -8,14 +8,15 @@ import { AnimateDiv } from "./nav";
 import { AnimatePresence } from "motion/react";
 import useRooms from "./hooks/userooms";
 import { Room } from "./types/room";
+import { User } from "@supabase/supabase-js";
 
-function CMenu({ rooms }: { rooms: Room[] }) {
+function CMenu({ rooms, user }: { rooms: Room[], user: User }) {
   const {Rooms} = useRooms();
   const [roomList, setRoomList] = useState(rooms);
   console.log(rooms)
   useEffect(()=>{
-    if (Rooms && Rooms.length != roomList){
-      setRoomList([...Rooms])
+    if (Rooms && Rooms.length != roomList && user.id){
+      setRoomList([...Rooms.filter((v: Room) => v.members?.includes(user?.id)  || v.owner === user.id)])
     }
   }, [Rooms, roomList.length])
   return (
@@ -45,17 +46,17 @@ function CMenu({ rooms }: { rooms: Room[] }) {
   );
 }
 
-export default function ChatMenu({ rooms }: { rooms: Room[] }) {
+export default function ChatMenu({ rooms, user }: { rooms: Room[] , user: User}) {
   return (
     <>
       {/* <div className="lg:block md:block h-full overflow-x-hidden hidden"> */}
-        <CMenu rooms={rooms} />
+        <CMenu rooms={rooms} user={user} />
       {/* </div> */}
     </>
   );
 }
 
-export function ChatMenuMobile({ rooms }: { rooms: Room[] }) {
+export function ChatMenuMobile({ rooms, user }: { rooms: Room[], user: User }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -89,7 +90,7 @@ export function ChatMenuMobile({ rooms }: { rooms: Room[] }) {
             className="sticky h-full bg-[#2E073F] p-2 z-10"
           >
             <div className="flex py-10 flex-col items-center h-full">
-              <CMenu rooms={rooms} />
+              <CMenu rooms={rooms} user={user} />
             </div>
           </AnimateDiv>
         )}
