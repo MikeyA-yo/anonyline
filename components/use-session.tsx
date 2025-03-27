@@ -12,8 +12,8 @@ const useClientSession = ()=>{
         const res = await fetch (`/api/session`);
         if (res.ok){
             const user = await res.json();
-            if (user.data?.session?.user){
-              setUser(user.data.session.user)
+            if (user.data?.user){
+              setUser(user.data.user)
             }
         }
       }

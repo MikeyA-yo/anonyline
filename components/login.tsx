@@ -19,6 +19,7 @@ export default function Login() {
   const [fState, lAction, fL] = useActionState(CreateLogin, undefined)
   const [sfState, sAction, sL] = useActionState(CreateAcct, undefined);
   const user = useClientSession();
+  
   useEffect(()=>{
     if (user){
       window.location.href = "/chat"

@@ -16,11 +16,11 @@ export default async function ChatLayout({
   children: React.ReactNode;
 }>) {
   const user = await getSafeUser();
-  if (!user?.data.session?.user) redirect("/login");
-  const room = await rooms(user.data.session.user)
+  if (!user?.data.user) return redirect("/login");
+  const room = await rooms(user.data.user)
   return (
     <main className="flex">
-      <SideBar rooms={room} user={user.data.session.user}/>
+      <SideBar rooms={room} user={user.data.user}/>
       {children}
     </main>
   );

@@ -6,7 +6,6 @@ import { HiBars3BottomRight } from "react-icons/hi2";
 import { MdClose } from "react-icons/md";
 import { ScrollLink } from "./ay-scroll";
 import { useClientSession } from "./use-session";
-import { Models } from "appwrite";
 import { User } from "@supabase/supabase-js";
 
 export default function Nav(){

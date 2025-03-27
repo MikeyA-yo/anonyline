@@ -3,7 +3,6 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import { InputContainer, InputGrps } from "./contactform";
 import { Dialog } from "./dialog";
-import { Models } from "appwrite";
 import useAPI from "./hooks/useapi";
 import { PiSpinnerLight } from "react-icons/pi";
 import { User } from "@supabase/supabase-js";

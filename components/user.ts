@@ -29,6 +29,6 @@ export async function loginUser(email:string, password:string){
 
 export async function getUser (){
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getSession();
+  const { data, error } = await supabase.auth.getUser();
   return {error,data};
 }

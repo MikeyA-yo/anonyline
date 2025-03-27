@@ -6,11 +6,11 @@ import { redirect } from "next/navigation";
 export default async function Page(){
    const user = await getSafeUser();
    console.log(user, !user)
-   if (!user?.data.session?.user) return redirect("/login");
+   if (!user?.data.user) return redirect("/login");
    const rooms = await listRooms();
     return (
         <>
-          <Find user={user.data.session.user} rooms={rooms}/>
+          <Find user={user.data.user} rooms={rooms}/>
         </>
     )
 }
