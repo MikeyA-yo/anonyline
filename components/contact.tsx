@@ -34,7 +34,7 @@ export default function Contact(){
                 <ContactForm />
             </div>
             <div>
-                <p className="text-sm">&copy; {new Date().getFullYear()} Anonyline, Oluwatola Ayomide, C.H.O Inc</p>
+                <p className="text-sm text-center">&copy; {new Date().getFullYear()} Anonyline, Oluwatola Ayomide, C.H.O Inc</p>
             </div>
           </div>
         </>

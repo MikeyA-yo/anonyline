@@ -46,7 +46,7 @@ export default function Features() {
     <>
       <div
         id="features"
-        className="flex flex-col items-center justify-center lg:p-20 p-10 gap-5"
+        className="flex flex-col items-center text-center justify-center lg:p-20 p-10 gap-5"
       >
         <div className="z-10">
           <h3 className="text-2xl text-[#EBD3F8]">

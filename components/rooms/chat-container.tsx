@@ -53,7 +53,7 @@ export default function ChatContainer({
   return (
     <div className="flex-1 flex flex-col bg-[#313338] h-[60vh]">
       <div className="flex-1 overflow-y-auto p-4">
-        <div className="max-w-4xl mx-auto space-y-4">
+        <div className="lg:max-w-4xl mx-auto space-y-4">
           {chats &&
             chats.chats.length >= 1 &&
             chats.chats.map((message: Chat) => (
@@ -67,7 +67,7 @@ export default function ChatContainer({
       </div>
 
       <div className="bg-[#2B2D31] p-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="lg:max-w-4xl mx-auto">
           <div className="flex gap-4">
             <input
               type="text"
