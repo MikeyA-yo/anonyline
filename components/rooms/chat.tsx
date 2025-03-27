@@ -75,7 +75,7 @@ export default function RoomChat({
   } hover:bg-[#7A1CAC] transition-colors px-4 py-2 rounded-lg`;
 
   return (
-    <div className="flex h-screen w-full relative">
+    <div className="flex h-[100dvh] w-full relative overflow-x-hidden">
       {/* Mobile Info Panel Overlay */}
       <div
         className={`fixed inset-0 bg-[#2B2D31] z-20 transition-transform duration-300 lg:hidden md:hidden 
@@ -175,8 +175,8 @@ export default function RoomChat({
         </button>
 
         {/* Chat Messages Area */}
-        <div className="flex-1 overflow-hidden h-[30vh] p-4">
-          <div className="max-w-4xl mx-auto">
+        <div className="flex-1 overflow-hidden h-[30vh] p-4 w-full max-w-full">
+          <div className="w-full lg:max-w-4xl mx-auto px-2 sm:px-4">
             <div className="flex flex-col items-center justify-center space-y-4 py-6">
               <div className="w-20 h-20 rounded-full bg-[#7A1CAC] flex items-center justify-center">
                 <span className="text-4xl">💭</span>
@@ -184,7 +184,7 @@ export default function RoomChat({
               <h1 className="lg:text-2xl text-xl font-bold text-[#EBD3F8]">
                 Welcome to {room.name}
               </h1>
-              <p className="text-[#a5a6a3] text-center">
+              <p className="text-[#a5a6a3] text-center text-sm md:text-base">
                 This is the beginning of the conversation. Keep it friendly and
                 respectful!
               </p>
