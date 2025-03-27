@@ -11,12 +11,12 @@ export default async function Page({
   const { id } = await params;
   const  room = await getRoom(decodeURIComponent(id));
   const {error, data} = await getUser();
-  if(!data.session?.user){
+  if(!data.user){
     redirect("/login");
   }
   return (
     <>
-      <RoomChat room={room} user={data.session?.user} />
+      <RoomChat room={room} user={data.user} />
     </>
   );
 }
