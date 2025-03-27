@@ -17,7 +17,7 @@ export default async function ChatLayout({
 }>) {
   const user = await getSafeUser();
   if (!user?.data.user) {
-    return redirect("/login")
+    return null
   };
   const room = await rooms(user.data.user)
   return (
