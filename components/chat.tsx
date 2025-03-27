@@ -1,11 +1,10 @@
-import { Models } from "appwrite";
+import { User } from "@supabase/supabase-js";
 
-export default function ChatPage({user}:{user:Models.User<Models.Preferences>}){
+
+export default function ChatPage({user}:{user:User}){
+
     return (
         <>
-          {/* <div className="bg-[#7A1CAC]">
-
-          </div> */}
           <div className="flex flex-col h-screen w-full">
             <div className="flex-1 overflow-y-auto bg-[#313338] p-4">
               <div className="max-w-2xl mx-auto">
@@ -13,7 +12,7 @@ export default function ChatPage({user}:{user:Models.User<Models.Preferences>}){
                   <div className="w-24 h-24 rounded-full bg-[#7A1CAC] flex items-center justify-center">
                     <span className="text-4xl text-white">👋</span>
                   </div>
-                  <h1 className="text-2xl font-bold text-white">Welcome to Anonyline {user.$id}!</h1>
+                  <h1 className="text-2xl font-bold text-white">Welcome to Anonyline {user.id.slice(0, 18)}!</h1>
                   <p className="text-gray-400 text-center">
                     This is the beginning of your anonymous chat experience.
                     Start a conversation or join existing ones!

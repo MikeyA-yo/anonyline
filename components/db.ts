@@ -1,52 +1,42 @@
-import { createSessionDB, createSessionStorage } from "@/app/appwrite_config/appwrite-server-config";
 import { revalidatePath } from "next/cache";
-import { Models, Query } from "node-appwrite";
-import { InputFile } from "node-appwrite/file";
-
-export async function rooms (user:Models.User<Models.Preferences>) {
-    const { database } = await  createSessionDB();
-    return database.listDocuments(process.env.DATABASE_ID as string, process.env.ROOMS as string, [Query.contains("members", [user.$id])]);
+import { createClient } from '@/app/supabase_config/server';
+import { User } from "@supabase/supabase-js";
+export async function rooms(user: User) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("rooms")
+    .select()
+    .or(`owner.eq.${user.id}, members.cs.{"${user.id}"}`);
+  if (error) return [];
+  return data;
 }
 
-export async function createRoom(name:string, description:string, creator:string, profileImage?:Buffer, image?:string){
-    const {database} = await  createSessionDB();
-    const {storage} = await createSessionStorage();
-    if(profileImage){
-        storage.createFile(process.env.PFP as string, name, InputFile.fromBuffer(profileImage, name));
-    }
-    const doc = database.createDocument(process.env.DATABASE_ID as string, process.env.ROOMS as string, name, {
-        name,
-        description,
-        members: [creator],
-        owner: creator,
-        admin:[creator],
-        image
-    })
-    revalidatePath("/chat");
-    return doc;
+export async function createRoom(name:string, description:string, owner:string, image?:string){
+  const supabase = await createClient();
+  const { error, data }  =  await supabase.from("rooms").insert({name, description, owner, image}).select();
+  if (error) return error;
+  revalidatePath("/chat");
+  return data[0];
 }
 export async function updateRoom(name:string, update:room){
-    const {database} = await  createSessionDB();
-    const doc = database.updateDocument(process.env.DATABASE_ID as string, process.env.ROOMS as string, name, update);
+    const supabase = await createClient();
+    const {error, data} = await supabase.from("rooms").update(update).eq("name", name).select();
+    if (error) return error;
     revalidatePath("/chat");
-    return doc;
+    return data[0];
 }
 export async function listRooms(){
-    const {database} = await  createSessionDB();
-    return database.listDocuments(process.env.DATABASE_ID as string, process.env.ROOMS as string);
+    const supabase = await createClient();
+    const {data, error} = await supabase.from("rooms").select();
+    if (error) return [];
+    return data;
 }
 
-export async function listUsers(){
-    const {database} = await  createSessionDB();
-    return database.listDocuments(process.env.DATABASE_ID as string, process.env.USERS as string);   
-}
-export async function createUser(user:string){
-    const {database} = await  createSessionDB();
-    return database.createDocument(process.env.DATABASE_ID as string, process.env.USERS as string, user, {user})
-}
-export async function getRoom(id:string){
-    const {database} = await  createSessionDB();
-    return database.getDocument(process.env.DATABASE_ID as string, process.env.ROOMS as string, id);
+export async function getRoom(name:string){
+    const supabase = await createClient();
+    const {data, error} = await supabase.from("rooms").select().eq("name", name);
+    if (error) return null;
+    return data[0];
 }
 interface room {
     name:string;

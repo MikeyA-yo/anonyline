@@ -1,10 +1,7 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createUser, loginUser } from "./user";
 import { loginSChema } from "./zconf";
-
-import { cookies } from "next/headers";
 import { ID } from "node-appwrite";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function CreateLogin(formState: any, formData: FormData) {
@@ -18,18 +15,11 @@ export async function CreateLogin(formState: any, formData: FormData) {
     };
   }
   const { email, password } = data.data;
-  const session = await loginUser(email, password);
-  if (session) {
-    const cookieStore = await cookies();
-    cookieStore.set("user", session.secret, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      expires: new Date(Date.now() + 30 * 7 * 24 * 60 * 60 * 1000),
-    });
-    console.log(cookieStore.get("user"), session);
-    return redirect("/chat");
+  const {error} = await loginUser(email, password);
+  if (error){
+    return {
+      errors: error.message
+    }
   }
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,7 +40,7 @@ export async function CreateAcct(formState: any, formData: FormData) {
     const res = await createUser(email, password, name);
     if (res){
       return {
-          success: "Successful, now login"
+          success: "Successful check your email: " + email + " for verification, if you don't see it check spam folder"
       }
     }} catch (e){
       if (e instanceof Error)

@@ -7,16 +7,16 @@ import { FaUserGroup } from "react-icons/fa6";
 import { AnimateDiv } from "./nav";
 import { AnimatePresence } from "motion/react";
 import useRooms from "./hooks/userooms";
-import { Models } from "appwrite";
-import { useClientSession } from "./use-session";
+import { Room } from "./types/room";
+import { User } from "@supabase/supabase-js";
 
-function CMenu({ rooms }: { rooms: Models.Document[] }) {
+function CMenu({ rooms, user }: { rooms: Room[], user: User }) {
   const {Rooms} = useRooms();
   const [roomList, setRoomList] = useState(rooms);
-  const user = useClientSession();
+  
   useEffect(()=>{
-    if (Rooms && Rooms.documents.length != roomList){
-      setRoomList([...Rooms.documents])
+    if (Rooms && Rooms.length != roomList && user.id){
+      setRoomList([...Rooms.filter((v: Room) => v.members?.includes(user?.id)  || v.owner === user.id)])
     }
   }, [Rooms, roomList.length])
   
@@ -42,7 +42,7 @@ function CMenu({ rooms }: { rooms: Models.Document[] }) {
       <div className="flex flex-col gap-4">
         {roomList.map((v, i) => (
           <Link 
-            href={`/chat/${v.$id}`}
+            href={`/chat/${v.name}`}
             key={i}
             className="bg-[#7A1CAC] p-1 rounded-full transition-all duration-75 ease-in-out  hover:rounded-md h-10 w-10 flex items-center justify-center"
           >
@@ -59,17 +59,15 @@ function CMenu({ rooms }: { rooms: Models.Document[] }) {
   );
 }
 
-export default function ChatMenu({ rooms }: { rooms: Models.Document[] }) {
+export default function ChatMenu({ rooms, user }: { rooms: Room[] , user: User}) {
   return (
     <>
-      {/* <div className="lg:block md:block h-full overflow-x-hidden hidden"> */}
-        <CMenu rooms={rooms} />
-      {/* </div> */}
+      <CMenu rooms={rooms} user={user} />
     </>
   );
 }
 
-export function ChatMenuMobile({ rooms }: { rooms: Models.Document[] }) {
+export function ChatMenuMobile({ rooms, user }: { rooms: Room[], user: User }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -103,7 +101,7 @@ export function ChatMenuMobile({ rooms }: { rooms: Models.Document[] }) {
             className="sticky h-full bg-[#2E073F] p-2 z-10"
           >
             <div className="flex py-10 flex-col items-center h-full">
-              <CMenu rooms={rooms} />
+              <CMenu rooms={rooms} user={user} />
             </div>
           </AnimateDiv>
         )}

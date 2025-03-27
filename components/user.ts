@@ -1,27 +1,34 @@
 "use server"
 
-import 'server-only';
-import { createSessionClient, createUserClient } from "@/app/appwrite_config/appwrite-server-config";
-import { ID } from "@/app/appwrite_config/appwriteConfig";
+import { createClient } from '@/app/supabase_config/server';
 
 export async function createUser( email:string, password:string, name?:string){
-  const {account} = await createUserClient();
-    if (name){
-      name = name.length < 3 ? name.concat(name) : name;
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options:{
+      emailRedirectTo:``,
+      data:{
+        name,
+      }
     }
-    const result = await account.create(ID.unique(), email, password, name);
-    return result;
+  });
+ 
+  return {error, data};
 }
 export async function loginUser(email:string, password:string){
-  
-  const {account} = await createUserClient();
-    const session = await account.createEmailPasswordSession(email, password);
-    
-    return session
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  return {error,data};
 }
 
 export async function getUser (){
-  const {account} = await createSessionClient();
-  const user = await account.get();
-  return user;
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getSession();
+  return {error,data};
 }

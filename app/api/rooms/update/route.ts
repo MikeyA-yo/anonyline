@@ -2,8 +2,9 @@ import { updateRoom } from "@/components/db";
 import { NextRequest } from "next/server";
 
 export async function PUT(req:NextRequest){
-  const {name, update} = await req.json();
+  
   try {
+    const {name, update} = await req.json();
     if (!name || !update){
       return new Response("Missing required fields", {status:400});
     }

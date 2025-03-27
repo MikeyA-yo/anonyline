@@ -1,33 +1,29 @@
 "use client";
-
-import {
-  client,
-  databaseId,
-  roomId,
-} from "@/app/appwrite_config/appwriteConfig";
+import { createClient } from "@/app/supabase_config/client";
 import useAPI from "./useapi";
-import { useEffect, useRef } from "react";
+import { useEffect} from "react";
 
 const useRooms = () => {
   const { res: Rooms, error, loading, run } = useAPI("rooms");
-  const effectRef = useRef(false);
+  const supabase = createClient();
     useEffect(() => {
-     let unsubscribe: () => void | undefined;   
-    if (!effectRef.current) {
-      effectRef.current = true;
-      const channel = `databases.${databaseId}.collections.${roomId}.documents`;
-      unsubscribe = client.subscribe([channel], (res) => {
-        console.log(res);
-        if (res) {
-          run("rooms", "GET"); // Re-fetch rooms when data changes
-        }
-      });
-    }
-      return () => {
-       if(unsubscribe) unsubscribe(); // Cleanup function to prevent memory leaks
-      };
+     supabase.channel("room").on("postgres_changes", { event: "*", schema: "public", table: "rooms" }, (payload) => {
+      run("rooms", "GET");
+     }).subscribe();
+      
   }, []);
   return { Rooms, error, loading, run };
 };
-
+const useRoom = (name:string) => {
+    const {res:Room, error, loading, run} = useAPI(`rooms?room=${name}`)
+    const supabase = createClient();
+    useEffect(() => {
+     supabase.channel("room").on("postgres_changes", { event: "*", schema: "public", table: "rooms" }, (payload) => {
+      run(`rooms?room=${name}`, "GET");
+     }).subscribe();
+      
+  }, []);
+  return { Room, error, loading, run };
+}
 export default useRooms;
+export {useRoom}

@@ -6,8 +6,9 @@ import { Dialog } from "./dialog";
 import { Models } from "appwrite";
 import useAPI from "./hooks/useapi";
 import { PiSpinnerLight } from "react-icons/pi";
+import { User } from "@supabase/supabase-js";
 
-export default function RoomForm({close, user}:{close:()=>void; user:Models.User<Models.Preferences>}) {
+export default function RoomForm({close, user}:{close:()=>void; user:User}) {
   const {res:Room, error, loading, run} = useAPI("rooms/create", "POST");
   const [e, setE] = useState(false);
   const [etxt, setETxt] = useState("");
@@ -68,13 +69,11 @@ export default function RoomForm({close, user}:{close:()=>void; user:Models.User
            async function create(){
             const buffer = formField.profilePicture ? await formField.profilePicture.arrayBuffer() : null;
             const bufU8 = new Uint8Array(buffer as ArrayBuffer);
-            const bufArr = Array.from(bufU8);
             const image = "data:image/png;base64,"+Buffer.from(bufU8).toString("base64");
             run("rooms/create", "POST", {
               name: formField.roomName,
               description: formField.roomDescription,
-              creator: user.$id,
-              pfp: bufArr,
+              creator: user.id,
               image
             })
            }
