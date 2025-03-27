@@ -7,6 +7,7 @@ import { MdClose } from "react-icons/md";
 import { ScrollLink } from "./ay-scroll";
 import { useClientSession } from "./use-session";
 import { Models } from "appwrite";
+import { User } from "@supabase/supabase-js";
 
 export default function Nav(){
     const [open, setOpen] = useState(false);
@@ -33,7 +34,7 @@ export default function Nav(){
     )
 }
 export const AnimateDiv = motion.div;
-function SideBar({user}:{user:Models.User<Models.Preferences> | undefined}){
+function SideBar({user}:{user:User | undefined}){
     return (
         <>
           <AnimateDiv className="flex flex-col gap-3 pt-16 h-screen fixed backdrop-blur-md w-full text-white px-5 z-20" initial={{
@@ -52,7 +53,7 @@ function SideBar({user}:{user:Models.User<Models.Preferences> | undefined}){
             <ScrollLink href={"#about"}>About</ScrollLink>
             <ScrollLink href={"#features"}>Features</ScrollLink>
             <ScrollLink href={"#contact"}>Contact</ScrollLink>
-            <button><Link href={user?"/chat":"/login"}>{user ? "Chat": "Login"}</Link></button>
+            <button><Link href={user?.id ?"/chat":"/login"}>{user ? "Chat": "Login"}</Link></button>
           </AnimateDiv>
         </>
     )
