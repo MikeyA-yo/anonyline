@@ -7,6 +7,7 @@ import useAPI from "../hooks/useapi";
 import { User } from "@supabase/supabase-js";
 import { useRoom } from "../hooks/userooms";
 import ChatContainer from "./chat-container";
+import useChat from "../hooks/usechat";
 
 export default function RoomChat({
   room: initialRoom,
@@ -18,9 +19,9 @@ export default function RoomChat({
   const [showInfo, setShowInfo] = useState(false);
   const { run } = useAPI("rooms/update", "POST");
   const { Room, loading } = useRoom(initialRoom.name);
-
+  const { chats } = useChat(initialRoom.id);
   const room: typeof initialRoom = !loading && Room && Room.length >= 1 ? Room[0] : initialRoom;
-
+  
   const hasVotedStay = room.members?.includes(user?.id);
   const hasVotedGo = room.enemies?.includes(user?.id);
 
@@ -174,13 +175,13 @@ export default function RoomChat({
         </button>
 
         {/* Chat Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-hidden h-[30vh] p-4">
           <div className="max-w-4xl mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 py-8">
-              <div className="w-24 h-24 rounded-full bg-[#7A1CAC] flex items-center justify-center">
+            <div className="flex flex-col items-center justify-center space-y-4 py-6">
+              <div className="w-20 h-20 rounded-full bg-[#7A1CAC] flex items-center justify-center">
                 <span className="text-4xl">💭</span>
               </div>
-              <h1 className="text-2xl font-bold text-[#EBD3F8]">
+              <h1 className="lg:text-2xl text-xl font-bold text-[#EBD3F8]">
                 Welcome to {room.name}
               </h1>
               <p className="text-[#a5a6a3] text-center">
@@ -190,7 +191,7 @@ export default function RoomChat({
             </div>
           </div>
         </div>
-         <ChatContainer />
+         <ChatContainer user={user} room={room} chats={chats} />
       </div>
     </div>
   );
