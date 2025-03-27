@@ -98,7 +98,7 @@ export function ChatMenuMobile({ rooms, user }: { rooms: Room[], user: User }) {
               type: "spring",
               bounce: 0.3,
             }}
-            className="sticky h-full bg-[#2E073F] p-2 z-10"
+            className="fixed h-full bg-[#2E073F] p-2 z-10"
           >
             <div className="flex py-10 flex-col items-center h-full">
               <CMenu rooms={rooms} user={user} />

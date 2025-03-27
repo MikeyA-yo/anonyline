@@ -1,5 +1,4 @@
 import SideBar from "@/components/chat-sidebar";
-import { redirect } from "next/navigation";
 import { getSafeUser } from "@/components/getUser";
 import "@/components/css/scroll.css";
 import { Metadata } from "next";
@@ -21,7 +20,7 @@ export default async function ChatLayout({
   };
   const room = await rooms(user.data.user)
   return (
-    <main className="flex">
+    <main className="flex overflow-hidden">
       <SideBar rooms={room} user={user.data.user}/>
       {children}
     </main>
