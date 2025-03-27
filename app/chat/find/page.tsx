@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 export default async function Page(){
    const user = await getSafeUser();
    console.log(user, !user)
-   if (!user?.data.user) return redirect("/login");
+   if (!user?.data.user) return null;
    const rooms = await listRooms();
     return (
         <>
