@@ -4,4 +4,5 @@ export interface Chat{
   room_id: number;
   from: string;
   chat: string;
+  seen: string[];
 }
