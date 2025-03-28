@@ -52,7 +52,7 @@ function SideBar({user}:{user:User | undefined}){
             <ScrollLink href={"#about"}>About</ScrollLink>
             <ScrollLink href={"#features"}>Features</ScrollLink>
             <ScrollLink href={"#contact"}>Contact</ScrollLink>
-            <button><Link href={user?.id ?"/chat":"/login"}>{user ? "Chat": "Login"}</Link></button>
+            <Link href={user ? "/chat":"/login"} className="text-center">{user ? "Chat": "Login"}</Link>
           </AnimateDiv>
         </>
     )
