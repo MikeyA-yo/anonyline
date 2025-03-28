@@ -165,17 +165,17 @@ export default function RoomChat({
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-[#313338] relative">
+      <div className="flex-1 flex flex-col w-full bg-[#313338] relative">
         {/* Mobile Info Button */}
         <button
           onClick={() => setShowInfo(true)}
-          className="lg:hidden md:hidden absolute top-4 right-4 bg-[#7A1CAC] p-2 rounded-full text-[#EBD3F8] z-10"
+          className="lg:hidden md:hidden fixed top-4 right-4 bg-[#7A1CAC] p-2 rounded-full text-[#EBD3F8] z-10"
         >
           <FaInfoCircle size={20} />
         </button>
 
         {/* Chat Messages Area */}
-        <div className="flex-1 overflow-hidden h-[30vh] p-4 w-full max-w-full">
+        <div className="flex-1 overflow-hidden h-[30vh] p-4 w-full">
           <div className="w-full lg:max-w-4xl mx-auto px-2 sm:px-4">
             <div className="flex flex-col items-center justify-center space-y-4 py-6">
               <div className="w-20 h-20 rounded-full bg-[#7A1CAC] flex items-center justify-center">
