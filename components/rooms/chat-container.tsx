@@ -3,7 +3,7 @@
 import { Chat } from "../types/chat";
 import { User } from "@supabase/supabase-js";
 import { Room } from "../types/room";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useAPI from "../hooks/useapi";
 
 interface MessageProps {
@@ -50,10 +50,16 @@ export default function ChatContainer({
   const currentUserId = user.id;
   const [msg, setMsg] = useState("");
   const { run, res, error } = useAPI("chat/add", "POST");
+  const chatRef = useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    if (chatRef.current){
+      chatRef.current.scrollIntoView({behavior:"smooth", block:"end"})
+    }
+  }, [chats])
   return (
     <div className="flex-1 w-full flex flex-col bg-[#313338] h-[60vh]">
       <div className="flex-1 overflow-y-auto lg:p-4 md:p-4 p-2">
-        <div className="lg:max-w-4xl mx-auto lg:space-y-4 md:space-y-4 space-y-2">
+        <div ref={chatRef} className="lg:max-w-4xl mx-auto lg:space-y-4 md:space-y-4 space-y-2">
           {chats &&
             chats.chats.length >= 1 &&
             chats.chats.map((message: Chat) => (
