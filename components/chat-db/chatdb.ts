@@ -5,7 +5,7 @@ export async function createChat(chat: string, from: string, roomId: number) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("chats")
-    .insert({ chat, from, room_id: roomId })
+    .insert({ chat, from, room_id: roomId, seen: [from] })
     .select();
   if (error) return error;
   revalidatePath("/chat");
@@ -50,4 +50,15 @@ export async function getChats(roomId: number) {
     .eq("room_id", roomId);
     if (error) return [];
     return data
+}
+
+export async function editChat(chatId: number, update:any){
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("chats")
+    .update(update)
+    .eq("id", chatId)
+    .select();
+  if (error) return error;
+  return data;
 }
