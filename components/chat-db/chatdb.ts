@@ -48,11 +48,11 @@ export async function getChats(roomId: number) {
     .from("chats")
     .select()
     .eq("room_id", roomId);
-    if (error) return [];
-    return data
+  if (error) return [];
+  return data;
 }
 
-export async function editChat(chatId: number, update:any){
+export async function editChat(chatId: number, update: any) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("chats")
@@ -60,5 +60,30 @@ export async function editChat(chatId: number, update:any){
     .eq("id", chatId)
     .select();
   if (error) return error;
+  console.log(data);
+  return data;
+}
+
+export async function removeLastSeenPoint(roomId: number, userId: string) {
+  const supabase = await createClient();
+  const chats = await getChats(roomId);
+  const update = [];
+  for (let i = 0; i < chats.length; i++) {
+    const chat = chats[i];
+    let seen = chat.seen || [];
+    if (seen.includes(userId)) {
+      seen = seen.filter((seenUser: string) => seenUser !== userId);
+      chat.seen = seen;
+      update.push(chat);
+    }
+  }
+  console.log(update);
+  const { data, error } = await supabase
+    .from("chats")
+    .upsert(update)
+    .eq("room_id", roomId)
+    .select();
+  if (error) return error;
+  revalidatePath("/chat");
   return data;
 }

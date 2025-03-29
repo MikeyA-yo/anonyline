@@ -49,13 +49,89 @@ export default function ChatContainer({
 }) {
   const currentUserId = user.id;
   const [msg, setMsg] = useState("");
-  const { run, res, error } = useAPI("chat/add", "POST");
+  const { run } = useAPI("chat/add", "POST");
   const chatRef = useRef<HTMLDivElement>(null);
-  useEffect(()=>{
-    if (chatRef.current){
+  const {run: run2, loading: updateLoading} = useAPI("chat/rls", "POST");
+  const [isUpdating, setIsUpdating] = useState(false);
+  const lastMessageRef = useRef<string | null>(null);
+  const [read, setRead] = useState([] as Chat[]);
+  const [unRead, setUnread] = useState([] as Chat[])
+  // Handle scroll to bottom
+  useEffect(() => {
+    if (chatRef.current) {
       chatRef.current.scrollIntoView({behavior:"smooth", block:"end"})
     }
-  }, [chats])
+    if (!read && chats.chats){
+      let isUnread = false;
+      let lastSeen:Chat | null  = null
+      for (let i = 0; i < chats.chats.length; i++){
+        let chat = chats.chats[i];
+        if (chat.seen.includes(user.id)){
+          lastSeen = chat;
+        }
+        if (!chat.seen.includes(user.id) && lastSeen){
+         setRead(prev => [...prev, lastSeen as Chat])
+         isUnread = true;
+        }
+        if(isUnread){
+          setUnread(prev => [...prev, chat])
+        }else{
+          setRead(prev => [...prev, chat])
+        }
+      }
+    }
+  }, [chats]);
+
+  // Clear previous seen records on mount
+  useEffect(() => {
+    run2("chat/rls", "POST", {
+      roomId: room.id,
+      userId: user.id,
+    });
+  }, []);
+
+  // Handle marking last message as seen
+  useEffect(() => {
+    if (!chats?.chats || chats.chats.length === 0 || isUpdating) return;
+
+    const lastMessage = chats.chats[chats.chats.length - 1];
+    
+    // Only update if this is a new last message
+    if (lastMessage.id !== lastMessageRef.current) {
+      lastMessageRef.current = lastMessage.id;
+      setIsUpdating(true);
+
+      run2("chat/add", "PUT", {
+        chatId: lastMessage.id,
+        update: {
+          seen: [...(lastMessage.seen || []), user.id]
+        }
+      })
+    }
+  }, [chats]);
+
+  // Reset isUpdating when the API call completes
+  useEffect(() => {
+    if (!updateLoading && isUpdating) {
+      setIsUpdating(false);
+    }
+  }, [updateLoading]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (chats?.chats && chats.chats.length > 0) {
+        const lastMessage = chats.chats[chats.chats.length - 1];
+        run2("chat/add", "PUT", {
+          chatId: lastMessage.id,
+          update: {
+            seen: [...(lastMessage.seen || []), user.id]
+          }
+        });
+      }
+    };
+  }, []);
+  console.log(read, unRead)
   return (
     <div className="flex-1 w-full flex flex-col bg-[#313338] h-[60vh]">
       <div className="flex-1 overflow-y-auto lg:p-4 md:p-4 p-2">

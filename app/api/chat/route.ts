@@ -9,6 +9,11 @@ export async function GET(req: NextRequest) {
       return new Response("Missing required fields", { status: 400 });
     }
     const chats = await getChats(parseInt(room));
+    chats.sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return dateA - dateB;
+    });
     return Response.json({ chats });
   } catch (e) {
     if (e instanceof Error) {
