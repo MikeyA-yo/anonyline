@@ -54,6 +54,7 @@ export default function ChatContainer({
   const { run: removeLastSeen, loading: removeSeenLoading } = useAPI("chat/rls", "POST");
   
   const chatRef = useRef<HTMLDivElement>(null);
+  const unreadRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<string | null>(null);
   const processedRef = useRef<number[]>([]);
   const initialReadRun = useRef(false);
@@ -66,9 +67,13 @@ export default function ChatContainer({
   // Scroll to bottom effect
   useEffect(() => {
     if (chatRef.current) {
-      chatRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      if (unRead.length > 0 && unreadRef.current) {
+        unreadRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        chatRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
     }
-  }, [chats]);
+  }, [chats, unRead.length]);
 
   // Read/Unread processing effect
   useEffect(() => {
@@ -254,7 +259,7 @@ export default function ChatContainer({
 
           {/* Unread messages separator */}
           {unRead.length > 0 && (
-            <div className="flex items-center gap-2 my-4">
+            <div ref={unreadRef} className="flex items-center gap-2 my-4">
               <div className="h-[1px] flex-1 bg-[#7A1CAC]"></div>
               <span className="text-[#7A1CAC] text-sm font-medium">
                 {unRead.length} unread message{unRead.length !== 1 ? 's' : ''}
