@@ -243,7 +243,28 @@ export default function ChatContainer({
           ref={chatRef}
           className="lg:max-w-4xl mx-auto lg:space-y-4 md:space-y-4 space-y-2"
         >
-          {chats?.chats?.length > 0 && chats.chats.map((message: Chat) => (
+          {/* Render read messages */}
+          {read.map((message: Chat) => (
+            <Message
+              key={message.id}
+              message={message}
+              currentUser={currentUserId}
+            />
+          ))}
+
+          {/* Unread messages separator */}
+          {unRead.length > 0 && (
+            <div className="flex items-center gap-2 my-4">
+              <div className="h-[1px] flex-1 bg-[#7A1CAC]"></div>
+              <span className="text-[#7A1CAC] text-sm font-medium">
+                {unRead.length} unread message{unRead.length !== 1 ? 's' : ''}
+              </span>
+              <div className="h-[1px] flex-1 bg-[#7A1CAC]"></div>
+            </div>
+          )}
+
+          {/* Render unread messages */}
+          {unRead.map((message: Chat) => (
             <Message
               key={message.id}
               message={message}
