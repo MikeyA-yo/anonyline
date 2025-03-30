@@ -49,13 +49,14 @@ export default function ChatContainer({
 }) {
   const currentUserId = user.id;
   const [msg, setMsg] = useState("");
-  const { run: sendMessage } = useAPI("chat/add", "POST");
+  const { run: sendMessage, res:newMsg } = useAPI("chat/add", "POST");
   const { run: updateSeen, loading: updateLoading } = useAPI("chat/add", "PUT");
   const { run: removeLastSeen, loading: removeSeenLoading } = useAPI("chat/rls", "POST");
   
   const chatRef = useRef<HTMLDivElement>(null);
   const unreadRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<string | null>(null);
+  const lastMessageElementRef = useRef<HTMLDivElement>(null);
   const processedRef = useRef<number[]>([]);
   const initialReadRun = useRef(false);
   
@@ -66,14 +67,25 @@ export default function ChatContainer({
 
   // Scroll to bottom effect
   useEffect(() => {
-    if (chatRef.current) {
-      if (unRead.length > 0 && unreadRef.current) {
-        unreadRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      } else {
-        chatRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-      }
+    const container = chatRef.current;
+    if (!container) return;
+
+    // Calculate if user is near bottom before updates
+    const isNearBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 100;
+
+    // Always maintain scroll position unless:
+    // 1. New unread messages appear
+    // 2. User is at bottom
+    if (unRead.length > 0 || isNearBottom) {
+      requestAnimationFrame(() => {
+        if (unRead.length > 0 && unreadRef.current) {
+          unreadRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (lastMessageElementRef.current) {
+          lastMessageElementRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+      });
     }
-  }, [chats, unRead.length]);
+  }, [chats, read, unRead]);
 
   // Read/Unread processing effect
   useEffect(() => {
@@ -162,7 +174,6 @@ export default function ChatContainer({
       // Update states
       setRead(newReads);
       setUnread(newUnreads);
-      console.log({newReads, newUnreads});
     }
   }, [chats?.chats]);
 
@@ -239,7 +250,21 @@ export default function ChatContainer({
       chat: msg,
     });
     setMsg("");
+     
+    // Scroll to bottom after sending a message
+    setTimeout(() => {
+      if (chatRef.current) {
+        chatRef.current.scrollIntoView({ behavior: "smooth", block:"end" });
+      }
+    }, 100);
   };
+  
+  
+  useEffect(() => {
+    if (newMsg && chatRef.current) {
+      chatRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [newMsg]);
 
   return (
     <div className="flex-1 w-full flex flex-col bg-[#313338] h-[60vh]">
@@ -249,12 +274,16 @@ export default function ChatContainer({
           className="lg:max-w-4xl mx-auto lg:space-y-4 md:space-y-4 space-y-2"
         >
           {/* Render read messages */}
-          {read.map((message: Chat) => (
-            <Message
+          {read.map((message: Chat, index) => (
+            <div
               key={message.id}
-              message={message}
-              currentUser={currentUserId}
-            />
+              ref={unRead.length === 0 && index === read.length - 1 ? lastMessageElementRef : null}
+            >
+              <Message
+                message={message}
+                currentUser={currentUserId}
+              />
+            </div>
           ))}
 
           {/* Unread messages separator */}
@@ -269,12 +298,16 @@ export default function ChatContainer({
           )}
 
           {/* Render unread messages */}
-          {unRead.map((message: Chat) => (
-            <Message
-              key={message.id}
-              message={message}
-              currentUser={currentUserId}
-            />
+          {unRead.map((message: Chat, index) => (
+            <div 
+              key={message.id} 
+              ref={index === unRead.length - 1 ? lastMessageElementRef : null}
+            >
+              <Message
+                message={message}
+                currentUser={currentUserId}
+              />
+            </div>
           ))}
         </div>
       </div>
