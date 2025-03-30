@@ -64,6 +64,7 @@ export default function ChatContainer({
   const [unRead, setUnread] = useState<Chat[]>([]);
   const [isUpdatingSeen, setIsUpdatingSeen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [userSentMessage, setUserSentMessage] = useState(false);
 
   // Scroll to bottom effect
   useEffect(() => {
@@ -73,7 +74,17 @@ export default function ChatContainer({
     // Calculate if user is near bottom before updates
     const isNearBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 100;
 
-    // Always maintain scroll position unless:
+    // Always scroll to bottom if user sent a message
+    if (userSentMessage) {
+      requestAnimationFrame(() => {
+        if (lastMessageElementRef.current) {
+          lastMessageElementRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+      });
+      return;
+    }
+
+    // Otherwise, maintain scroll position unless:
     // 1. New unread messages appear
     // 2. User is at bottom
     if (unRead.length > 0 || isNearBottom) {
@@ -243,6 +254,9 @@ export default function ChatContainer({
 
   const handleSendMessage = () => {
     if (!msg.trim()) return;
+    
+    // Set userSentMessage to true when user sends a message
+    setUserSentMessage(true);
     
     sendMessage("chat/add", "POST", {
       roomId: room.id,
