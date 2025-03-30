@@ -77,7 +77,6 @@ export async function removeLastSeenPoint(roomId: number, userId: string) {
       update.push(chat);
     }
   }
-  console.log(update);
   const { data, error } = await supabase
     .from("chats")
     .upsert(update)

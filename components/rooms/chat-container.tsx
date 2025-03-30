@@ -41,7 +41,7 @@ function Message({ message, currentUser }: MessageProps) {
 export default function ChatContainer({
   user,
   room,
-  chats
+  chats,
 }: {
   user: User;
   room: Room;
@@ -49,141 +49,207 @@ export default function ChatContainer({
 }) {
   const currentUserId = user.id;
   const [msg, setMsg] = useState("");
-  const { run } = useAPI("chat/add", "POST");
+  const { run: sendMessage } = useAPI("chat/add", "POST");
+  const { run: updateSeen, loading: updateLoading } = useAPI("chat/add", "PUT");
+  const { run: removeLastSeen, loading: removeSeenLoading } = useAPI("chat/rls", "POST");
+  
   const chatRef = useRef<HTMLDivElement>(null);
-  const {run: run2, loading: updateLoading} = useAPI("chat/rls", "POST");
-  const [isUpdating, setIsUpdating] = useState(false);
   const lastMessageRef = useRef<string | null>(null);
+  const processedRef = useRef<number[]>([]);
+  const initialReadRun = useRef(false);
+  
   const [read, setRead] = useState<Chat[]>([]);
   const [unRead, setUnread] = useState<Chat[]>([]);
-  const processedRef = useRef<number[]>([]);
+  const [isUpdatingSeen, setIsUpdatingSeen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  // Handle scroll to bottom
+  // Scroll to bottom effect
   useEffect(() => {
     if (chatRef.current) {
-      chatRef.current.scrollIntoView({behavior:"smooth", block:"end"})
+      chatRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [chats]);
 
-  // Modified effect for processing read/unread messages
+  // Read/Unread processing effect
   useEffect(() => {
     if (!chats?.chats) return;
 
-    const currentMessages = chats.chats;
-    const seenMessages: Chat[] = [];
-    const unseenMessages: Chat[] = [];
-    
-    // Find the last seen message index
-    let lastSeenIndex = -1;
-    for (let i = currentMessages.length - 1; i >= 0; i--) {
-      if ((currentMessages[i].seen || []).includes(user.id)) {
-        lastSeenIndex = i;
-        break;
+    if (!initialReadRun.current) {
+      // Initial run logic remains the same
+      const currentMessages = chats.chats;
+      const seenMessages: Chat[] = [];
+      const unseenMessages: Chat[] = [];
+
+      let lastSeenIndex = -1;
+      for (let i = currentMessages.length - 1; i >= 0; i--) {
+        if ((currentMessages[i].seen || []).includes(user.id)) {
+          lastSeenIndex = i;
+          break;
+        }
       }
+
+      currentMessages.forEach((chat: Chat, index: number) => {
+        if (processedRef.current.includes(chat.id)) return;
+        processedRef.current.push(chat.id);
+
+        if (index <= lastSeenIndex) {
+          seenMessages.push(chat);
+        } else {
+          unseenMessages.push(chat);
+        }
+      });
+
+      setRead(seenMessages);
+      setUnread(unseenMessages);
+      initialReadRun.current = true;
+    } else {
+      console.log("Updating messages...");
+      const newChats = chats.chats;
+      const newReads: Chat[] = [];
+      const newUnreads: Chat[] = [];
+
+      // First, handle existing messages and check for updates/deletions
+      newChats.forEach((chat: Chat) => {
+        // Check if message exists in either read or unread
+        const existingRead = read.find(msg => msg.id === chat.id);
+        const existingUnread = unRead.find(msg => msg.id === chat.id);
+
+        if (existingRead) {
+          // Message exists in read - check if it was updated
+          if (JSON.stringify(existingRead) !== JSON.stringify(chat)) {
+            // Message was updated, maintain its read status
+            newReads.push(chat);
+          } else {
+            newReads.push(existingRead);
+          }
+          return;
+        }
+
+        if (existingUnread) {
+          // Message exists in unread - check if it was updated
+          if (JSON.stringify(existingUnread) !== JSON.stringify(chat)) {
+            // Message was updated, maintain its unread status
+            newUnreads.push(chat);
+          } else {
+            newUnreads.push(existingUnread);
+          }
+          return;
+        }
+
+        // This is a new message
+        if (!processedRef.current.includes(chat.id)) {
+          processedRef.current.push(chat.id);
+          
+          // If there are unread messages, new ones go to unread
+          if (unRead.length > 0) {
+            newUnreads.push(chat);
+          } else {
+            newReads.push(chat);
+          }
+        }
+      });
+
+      // Remove processed IDs that no longer exist in the chat
+      processedRef.current = processedRef.current.filter(id => 
+        newChats.some((chat: Chat) => chat.id === id)
+      );
+
+      // Update states
+      setRead(newReads);
+      setUnread(newUnreads);
+      console.log({newReads, newUnreads});
     }
+  }, [chats?.chats]);
 
-    // Process all messages based on the last seen index
-    currentMessages.forEach((chat: Chat, index: number) => {
-      // Skip if already processed
-      if (processedRef.current.includes(chat.id)) return;
-      
-      // Mark as processed
-      processedRef.current.push(chat.id);
-
-      // If index is less than or equal to lastSeenIndex, it's read
-      if (index <= lastSeenIndex) {
-        seenMessages.push(chat);
-      } else {
-        unseenMessages.push(chat);
-      }
-    });
-
-    // Update states only if we have new messages
-    if (seenMessages.length > 0) {
-      setRead(prev => [...prev, ...seenMessages]);
-    }
-    if (unseenMessages.length > 0) {
-      setUnread(prev => [...prev, ...unseenMessages]);
-    }
-
-  }, [chats?.chats, user.id]);
-
-  // Clear processed messages on unmount
-  useEffect(() => {
-    return () => {
-      processedRef.current = [];
-    };
-  }, []);
-
-  // Log for debugging
-  useEffect(() => {
-    console.log('Read messages:', read);
-    console.log('Unread messages:', unRead);
-  }, [read, unRead]);
-
-  // Clear previous seen records on mount
-  useEffect(() => {
-    run2("chat/rls", "POST", {
-      roomId: room.id,
-      userId: user.id,
-    });
-  }, []);
-
-  // Handle marking last message as seen
+  // Handle seen status updates
   useEffect(() => {
     if (!chats?.chats || chats.chats.length === 0 || isUpdating) return;
 
     const lastMessage = chats.chats[chats.chats.length - 1];
-    
+
     // Only update if this is a new last message
-    if (lastMessage.id !== lastMessageRef.current && !(lastMessage.seen || []).includes(user.id)) {
+    if (
+      lastMessage.id !== lastMessageRef.current &&
+      !(lastMessage.seen || []).includes(user.id)
+    ) {
       lastMessageRef.current = lastMessage.id;
       setIsUpdating(true);
 
-      run2("chat/add", "PUT", {
-        chatId: lastMessage.id,
-        update: {
-          seen: [...(lastMessage.seen || []), user.id]
-        }
-      })
+      // First remove previous seen records
+      removeLastSeen("chat/rls", "POST", {
+        roomId: room.id,
+        userId: user.id,
+      });
     }
   }, [chats]);
 
-  // Reset isUpdating when the API call completes
+  // Watch removeSeenLoading to trigger updateSeen
   useEffect(() => {
-    if (!updateLoading && isUpdating) {
+    if (!removeSeenLoading && isUpdating && lastMessageRef.current) {
+      const lastMessage = chats.chats[chats.chats.length - 1];
+      
+      updateSeen("chat/add", "PUT", {
+        chatId: lastMessage.id,
+        update: {
+          seen: [...(lastMessage.seen || []), user.id],
+        },
+      });
+    }
+  }, [removeSeenLoading]);
+
+  // Reset isUpdating when both operations complete
+  useEffect(() => {
+    if (!updateLoading && !removeSeenLoading && isUpdating) {
       setIsUpdating(false);
     }
-  }, [updateLoading]);
+  }, [updateLoading, removeSeenLoading]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (chats?.chats && chats.chats.length > 0) {
+      processedRef.current = [];
+      
+      if (chats?.chats?.length > 0) {
         const lastMessage = chats.chats[chats.chats.length - 1];
-        run2("chat/add", "PUT", {
-          chatId: lastMessage.id,
-          update: {
-            seen: [...(lastMessage.seen || []), user.id]
-          }
-        });
+        const seen = lastMessage.seen || [];
+        
+        if (!seen.includes(user.id)) {
+          updateSeen("chat/add", "PUT", {
+            chatId: lastMessage.id,
+            update: {
+              seen: [...seen, user.id],
+            },
+          });
+        }
       }
     };
   }, []);
-  console.log(read, unRead)
+
+  const handleSendMessage = () => {
+    if (!msg.trim()) return;
+    
+    sendMessage("chat/add", "POST", {
+      roomId: room.id,
+      from: user.id,
+      chat: msg,
+    });
+    setMsg("");
+  };
+
   return (
     <div className="flex-1 w-full flex flex-col bg-[#313338] h-[60vh]">
       <div className="flex-1 overflow-y-auto lg:p-4 md:p-4 p-2">
-        <div ref={chatRef} className="lg:max-w-4xl mx-auto lg:space-y-4 md:space-y-4 space-y-2">
-          {chats &&
-            chats.chats.length >= 1 &&
-            chats.chats.map((message: Chat) => (
-              <Message
-                key={message.id}
-                message={message}
-                currentUser={currentUserId}
-              />
-            ))}
+        <div
+          ref={chatRef}
+          className="lg:max-w-4xl mx-auto lg:space-y-4 md:space-y-4 space-y-2"
+        >
+          {chats?.chats?.length > 0 && chats.chats.map((message: Chat) => (
+            <Message
+              key={message.id}
+              message={message}
+              currentUser={currentUserId}
+            />
+          ))}
         </div>
       </div>
 
@@ -193,32 +259,14 @@ export default function ChatContainer({
             <input
               type="text"
               placeholder="Send a message..."
-              onChange={(e) => {
-                setMsg(e.target.value);
-              }}
               value={msg}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  run("chat/add", "POST", {
-                    roomId: room.id,
-                    from: user.id,
-                    chat: msg,
-                  });
-                  setMsg("");
-                }
-              }}
+              onChange={(e) => setMsg(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
               className="flex-1 bg-[#383A40] text-[#EBD3F8] rounded-md lg:px-4 md:px-4 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-[#7A1CAC]"
             />
             <button
+              onClick={handleSendMessage}
               className="bg-[#7A1CAC] text-[#EBD3F8] lg:px-6 md:px-6 px-3 py-2 rounded-md hover:bg-[#6A189C] transition-colors"
-              onClick={() => {
-                run("chat/add", "POST", {
-                  roomId: room.id,
-                  from: user.id,
-                  chat: msg,
-                });
-                setMsg("");
-              }}
             >
               Send
             </button>
