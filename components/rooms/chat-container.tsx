@@ -54,33 +54,72 @@ export default function ChatContainer({
   const {run: run2, loading: updateLoading} = useAPI("chat/rls", "POST");
   const [isUpdating, setIsUpdating] = useState(false);
   const lastMessageRef = useRef<string | null>(null);
-  const [read, setRead] = useState([] as Chat[]);
-  const [unRead, setUnread] = useState([] as Chat[])
+  const [read, setRead] = useState<Chat[]>([]);
+  const [unRead, setUnread] = useState<Chat[]>([]);
+  const processedRef = useRef<number[]>([]);
+
   // Handle scroll to bottom
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollIntoView({behavior:"smooth", block:"end"})
     }
-    if (!read && chats.chats){
-      let isUnread = false;
-      let lastSeen:Chat | null  = null
-      for (let i = 0; i < chats.chats.length; i++){
-        let chat = chats.chats[i];
-        if (chat.seen.includes(user.id)){
-          lastSeen = chat;
-        }
-        if (!chat.seen.includes(user.id) && lastSeen){
-         setRead(prev => [...prev, lastSeen as Chat])
-         isUnread = true;
-        }
-        if(isUnread){
-          setUnread(prev => [...prev, chat])
-        }else{
-          setRead(prev => [...prev, chat])
-        }
+  }, [chats]);
+
+  // Modified effect for processing read/unread messages
+  useEffect(() => {
+    if (!chats?.chats) return;
+
+    const currentMessages = chats.chats;
+    const seenMessages: Chat[] = [];
+    const unseenMessages: Chat[] = [];
+    
+    // Find the last seen message index
+    let lastSeenIndex = -1;
+    for (let i = currentMessages.length - 1; i >= 0; i--) {
+      if ((currentMessages[i].seen || []).includes(user.id)) {
+        lastSeenIndex = i;
+        break;
       }
     }
-  }, [chats]);
+
+    // Process all messages based on the last seen index
+    currentMessages.forEach((chat: Chat, index: number) => {
+      // Skip if already processed
+      if (processedRef.current.includes(chat.id)) return;
+      
+      // Mark as processed
+      processedRef.current.push(chat.id);
+
+      // If index is less than or equal to lastSeenIndex, it's read
+      if (index <= lastSeenIndex) {
+        seenMessages.push(chat);
+      } else {
+        unseenMessages.push(chat);
+      }
+    });
+
+    // Update states only if we have new messages
+    if (seenMessages.length > 0) {
+      setRead(prev => [...prev, ...seenMessages]);
+    }
+    if (unseenMessages.length > 0) {
+      setUnread(prev => [...prev, ...unseenMessages]);
+    }
+
+  }, [chats?.chats, user.id]);
+
+  // Clear processed messages on unmount
+  useEffect(() => {
+    return () => {
+      processedRef.current = [];
+    };
+  }, []);
+
+  // Log for debugging
+  useEffect(() => {
+    console.log('Read messages:', read);
+    console.log('Unread messages:', unRead);
+  }, [read, unRead]);
 
   // Clear previous seen records on mount
   useEffect(() => {
@@ -97,7 +136,7 @@ export default function ChatContainer({
     const lastMessage = chats.chats[chats.chats.length - 1];
     
     // Only update if this is a new last message
-    if (lastMessage.id !== lastMessageRef.current) {
+    if (lastMessage.id !== lastMessageRef.current && !(lastMessage.seen || []).includes(user.id)) {
       lastMessageRef.current = lastMessage.id;
       setIsUpdating(true);
 

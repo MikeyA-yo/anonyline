@@ -71,7 +71,7 @@ export async function removeLastSeenPoint(roomId: number, userId: string) {
   for (let i = 0; i < chats.length; i++) {
     const chat = chats[i];
     let seen = chat.seen || [];
-    if (seen.includes(userId)) {
+    if (seen.includes(userId) && i !== chats.length - i) {
       seen = seen.filter((seenUser: string) => seenUser !== userId);
       chat.seen = seen;
       update.push(chat);
