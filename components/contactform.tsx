@@ -59,7 +59,7 @@ export default function ContactForm() {
                 dp({ type: "name", value: e.target.value });
               }}
               id="name"
-              placeholder="Please enter your name"
+              placeholder="E.g: John Doe"
               className="p-2 rounded-md text-[#2E073F]"
             />
           </InputContainer>
@@ -71,7 +71,7 @@ export default function ContactForm() {
               }}
               id="email"
               type="email"
-              placeholder="Please enter your email"
+              placeholder="E.g: aydagoat@gmail.com"
               className="p-2 rounded-md text-[#2E073F]"
             />
           </InputContainer>
@@ -85,7 +85,7 @@ export default function ContactForm() {
               }}
               id="Phone"
               type="tel"
-              placeholder="Please enter your phone number"
+              placeholder="E.g: 808 9132344"
               className="p-2 rounded-md text-[#2E073F]"
             />
           </InputContainer>

@@ -23,7 +23,7 @@ export default function Redirect({ path }: RedirectProps) {
       padding: '20px', 
       fontWeight: 'bold',
       textAlign: 'center'
-    }}>
+    }} className='h-screen'>
       Redirecting to {path}... in 1 second
     </div>
   );
