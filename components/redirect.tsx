@@ -11,7 +11,7 @@ export default function Redirect({ path }: RedirectProps) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push(path);
+      router.push(path.startsWith('/') ? path : `/${path}`);
     }, 1000);
 
     return () => clearTimeout(timer);

@@ -15,6 +15,30 @@ interface MessageProps {
 function Message({ message, currentUser }: MessageProps) {
   const isCurrentUser = message.from === currentUser;
 
+  const renderContent = (text: string) => {
+    // Simple URL regex pattern
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    
+    // Split text by URLs
+    const parts = text.split(urlPattern);
+    return parts.map((part, index) => {
+      if (part.match(urlPattern)) {
+        return (
+          <a 
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline break-all"
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   return (
     <div
       className={`flex flex-col ${
@@ -29,9 +53,9 @@ function Message({ message, currentUser }: MessageProps) {
           isCurrentUser
             ? "bg-[#7A1CAC] text-[#EBD3F8]"
             : "bg-[#2B2D31] text-[#a5a6a3]"
-        }`}
+        } break-words`}
       >
-        {message.chat}
+        {renderContent(message.chat)}
       </div>
     </div>
   );
