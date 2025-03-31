@@ -8,25 +8,25 @@ const features = [
   {
     title: "Anonymity",
     description:
-      "Secure anonymous messaging, no personal detail shown, just a unique ID/ username of your choice.",
+      "Secure anonymous messaging.\nNo personal detail shown.\n Just a random unique ID.",
     icon: <HiUserGroup className="h-12 w-12" />,
   },
   {
-    title: "End-to-End Encryption",
+    title: "End-to-end encryption",
     description:
-      "Messages are encrypted from sender to receiver, no one else can read your messages.",
+      "Messages are encrypted from sender to receiver.\nNo one else can read your messages.",
     icon: <RiChatPrivateLine className="h-12 w-12" />,
   },
   {
     title: "Create chat rooms",
     description:
-      "Create chat rooms and invite friends to join, chat groups may be public or private. ",
+      "Create chat rooms and invite friends to join.\n",
     icon: <HiUserGroup className="h-12 w-12" />,
   },
   {
     title: "No history",
     description:
-      "No chat history is stored, every 2 days chat history is cleared ",
+      "No chat history is stored.\nEvery seven days chat history is cleared ",
     icon: <RiChatHistoryLine className="h-12 w-12" />,
   },
   {
@@ -35,8 +35,8 @@ const features = [
     icon:<FaUserEdit className="h-12 w-12" />
   },
   {
-    title:"Truly Anonymous",
-    description:"No form of tracking, last seen, or online status. Truly anonymous",
+    title:"Truly anonymous",
+    description:"No form of tracking,no last seen or online status. Truly anonymous",
     icon:<AiOutlineSafetyCertificate className="h-12 w-12" />
   }
 ];

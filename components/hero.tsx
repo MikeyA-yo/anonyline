@@ -39,7 +39,7 @@ export default function Hero() {
           className="z-10"
         >
           <p className="font-mono text-[#EBD3F8] text-lg">
-            Anonyline allows a 2 way communication anonymously
+            Anonyline allows a two-way communication anonymously
           </p>
         </AnimateDiv>
         <div className="flex gap-2 z-10">
