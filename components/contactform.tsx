@@ -107,10 +107,19 @@ export default function ContactForm() {
           disabled={loading}
           className={`self-end px-2 py-1 bg-[#7A1CAC] rounded`}
           onClick={() => {
+            if (!state.email || !state.name || !state.message) {
+              setError(true);
+
+              return;
+            }
             sendMsg(state);
           }}
         >
-          {loading ? <PiSpinnerLight className={`${loading? "animate-spin":""}`} /> : "Send"}
+          {loading ? (
+            <PiSpinnerLight className={`${loading ? "animate-spin" : ""}`} />
+          ) : (
+            "Send"
+          )}
         </button>
       </div>
     </>
@@ -126,39 +135,49 @@ export function InputGrps({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Success(){
-    return (
-        <>
-          <AnimateDiv initial={{
-            opacity: 0,
-            y: -10,
-          }} animate={{
-            opacity: 1,
-            y: 0,
-          }} transition={{
-            duration: 0.3,
-            ease: "easeInOut",
-          }} className="bg-[#5D8736] w-full p-3 rounded">
-            Message sent successfully
-          </AnimateDiv>
-        </>
-    )
+function Success() {
+  return (
+    <>
+      <AnimateDiv
+        initial={{
+          opacity: 0,
+          y: -10,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
+        }}
+        className="bg-[#5D8736] w-full p-3 rounded"
+      >
+        Message sent successfully
+      </AnimateDiv>
+    </>
+  );
 }
-function Error(){
-    return (
-        <>
-          <AnimateDiv initial={{
-            opacity: 0,
-            y: -10,
-          }} animate={{
-            opacity: 1,
-            y: 0,
-          }} transition={{
-            duration: 0.3,
-            ease: "easeInOut",
-          }} className="bg-[#D00000] w-full p-3 rounded">
-            Message failed to send
-          </AnimateDiv>
-        </>
-    )
+function Error() {
+  return (
+    <>
+      <AnimateDiv
+        initial={{
+          opacity: 0,
+          y: -10,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
+        }}
+        className="bg-[#D00000] w-full p-3 rounded"
+      >
+        Message failed to send, validate your input
+      </AnimateDiv>
+    </>
+  );
 }
