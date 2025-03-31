@@ -81,7 +81,7 @@ export default function Login() {
             {mode === "signup" && (
               <InputGrps>
                 <InputContainer>
-                  <label htmlFor="fname">First Name: </label>
+                  <label htmlFor="fname">First Name (optional): </label>
                   <input
                     id="fname"
                     name="fname"
@@ -93,7 +93,7 @@ export default function Login() {
                   />
                 </InputContainer>
                 <InputContainer>
-                  <label htmlFor="lname">Last Name: </label>
+                  <label htmlFor="lname">Last Name (optional): </label>
                   <input
                     id="lname"
                     name="lname"
