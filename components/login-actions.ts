@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { createUser, loginUser } from "./user";
 import { loginSChema } from "./zconf";
 import { ID } from "node-appwrite";
@@ -21,6 +22,7 @@ export async function CreateLogin(formState: any, formData: FormData) {
       errors: error.message
     }
   }
+  redirect("/chat");
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function CreateAcct(formState: any, formData: FormData) {

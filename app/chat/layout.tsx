@@ -3,6 +3,7 @@ import { getSafeUser } from "@/components/getUser";
 import "@/components/css/scroll.css";
 import { Metadata } from "next";
 import { rooms } from "@/components/db";
+import Redirect from "@/components/redirect";
 
 export const metadata: Metadata = {
   title: "Chat",
@@ -16,7 +17,7 @@ export default async function ChatLayout({
 }>) {
   const user = await getSafeUser();
   if (!user?.data.user) {
-    return null
+    return <Redirect path="login" />;
   };
   const room = await rooms(user.data.user)
   return (
