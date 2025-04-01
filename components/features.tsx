@@ -26,12 +26,12 @@ const features = [
   {
     title: "No history",
     description:
-      "No chat history is stored.\nEvery seven days chat history is cleared ",
+      "No chat history is stored.\nEvery seven days, chat history is cleared. ",
     icon: <RiChatHistoryLine className="h-12 w-12" />,
   },
   {
     title:"Customize your profile",
-    description:"Customize your profile with a unique username and profile picture (optional)",
+    description:"Customize your profile with a unique username and profile picture (optional).",
     icon:<FaUserEdit className="h-12 w-12" />
   },
   {

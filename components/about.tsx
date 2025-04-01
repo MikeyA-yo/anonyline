@@ -17,7 +17,7 @@ export default function About(){
                 <p className={`text-lg`}>You can create a post and share it with the world without revealing your identity.</p>
               </AnimateDiv>
               <AnimateDiv initial={{opacity:0, y:"70%"}} whileInView={{opacity:[0.5, 1], y:0}} transition={{duration:0.3, delay:0.4}} viewport={{once:true}}>
-                <p className={`text-lg`}>Explore and Create your own room, where you can talk with people all over the world anonymously</p>
+                <p className={`text-lg`}>Explore and create your own room, where you can talk with people all over the world anonymously</p>
                 </AnimateDiv>
             </div>
           </div>
